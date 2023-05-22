@@ -224,3 +224,63 @@ def pad_sequences(sequences, maxlen=None, dtype='int32',
         else:
             raise ValueError('Padding type "%s" not understood' % padding)
     return x
+
+
+def multi_batch_generator(X, y, token_label, masks, batch_size):
+    """Primitive batch generator
+    """
+    size = X.shape[0]
+    indices = np.arange(size)
+    np.random.shuffle(indices)
+
+    X_copy = X.copy()
+
+    X_copy = X_copy[indices]
+
+    if y is not None:
+        y_copy = y.copy()
+        y_copy = y_copy[indices]
+
+    if token_label is not None:
+        token_label_copy = token_label.copy()
+        token_label_copy = token_label_copy[indices]
+
+    if masks is not None:
+        masks_copy = masks.copy()
+        masks_copy = masks_copy[indices]
+
+    i = 0
+    while True:
+        if i + batch_size <= size:
+            X_batch = X_copy[i:i + batch_size]
+            y_batch = y_copy[i:i + batch_size] if y is not None else None
+            t_batch = token_label_copy[i:i + batch_size] if token_label is not None else None
+            m_batch = masks_copy[i:i + batch_size] if masks is not None else None
+            yield X_batch, y_batch, t_batch, m_batch
+            i += batch_size
+        else:
+            i = 0
+            indices = np.arange(size)
+            np.random.shuffle(indices)
+            X_copy = X_copy[indices]
+            y_copy = y_copy[indices]
+            token_label_copy = token_label_copy[indices]
+            if masks is not None:
+                masks_copy = masks_copy[indices]
+            continue
+
+def multi_batch_seq_generator(X, y, token_label, masks, batch_size):
+    """Primitive batch generator
+    """
+    size = X.shape[0]
+
+    i = 0
+    while True:
+        if masks is not None:
+            yield X[i:i + batch_size], y[i:i + batch_size], token_label[i:i + batch_size], masks[i:i + batch_size]
+        else:
+            yield X[i:i + batch_size], y[i:i + batch_size], token_label[i:i + batch_size]
+        if i + batch_size >= size:
+            break
+        else:
+            i += batch_size
