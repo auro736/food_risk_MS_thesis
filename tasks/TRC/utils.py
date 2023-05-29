@@ -2,16 +2,23 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
+import datetime
+import matplotlib.pyplot as plt
+from sklearn.calibration import CalibrationDisplay
+
 import numpy as np
 from tqdm import tqdm
 
 from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix
 
 from common_utils import pad_sequences
+from TRC.custom_parser import my_parser
 from TRC.models import ModelForWeightedSequenceClassification, ModelForWeightedSequenceClassificationDeberta
 
+args = my_parser()
 
 def eval_metrics(preds, y):
+
     '''
     Returns performance metrics of predictor
     :param y: ground truth label
@@ -20,8 +27,13 @@ def eval_metrics(preds, y):
     '''
     m = nn.Softmax(dim=1)
     probabilities = m(preds)
+    # torna il valore più alto e il rispettivo indice 
+    # y_values la probabilità maggiore per ogni tweet
     y_values, indices = torch.max(probabilities, 1)
+    # dato che la posizione nella lista di 2 elementi della probabilità 
+    # rappresenta la prob della label
     y_pred = indices
+
     try:
         auc = roc_auc_score(y, y_values)
     except:
@@ -115,8 +127,32 @@ def train(model, optimizer, train_batch_generator, num_batches, device, class_we
     print(f'\tClassification Loss: {epoch_loss / num_batches:.3f}')
     return epoch_loss / num_batches, epoch_auc / num_batches, epoch_acc / num_batches, epoch_tn, epoch_fp, epoch_fn, epoch_tp, epoch_precision, epoch_recall
 
+def calibration_plot(logits, y):
+    # logits = output dell'ultimo layer del classificatore senza softmax
+    # y = batch ground truth
+    
+    m = nn.Softmax(dim=1)
+    probabilities = m(logits)
 
-def evaluate(model, test_batch_generator, num_batches, device, class_weight):
+    # per creare calibration plot from_predictions la doc dice che vuole (y_true, prob)
+    # dove prob sono le prob della classe positiva, ossia in probabilities
+    # gli el sono liste [P(0), P(1)] devo prendermi solo P(1)
+
+    pos_probs = probabilities[:,1] 
+    # pos_probs = []
+    # for probs in probabilities:
+    #     pos_probs.append(probs[1])
+    
+    log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] + '/' + args.model_type + '/' \
+                    + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
+                    str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
+    figure_name = 'calibration_curve.' + str(datetime.datetime.now()).replace(' ', '--').replace(':', '-').replace('.',
+                                                                                                         '-')+ '.png'
+    path = log_directory+figure_name
+    disp = CalibrationDisplay.from_predictions(y, pos_probs, pos_label=1)
+    plt.savefig(path)
+
+def evaluate(model, test_batch_generator, num_batches, device, class_weight, split):
     """
     Main evaluation routine
     """
@@ -144,8 +180,12 @@ def evaluate(model, test_batch_generator, num_batches, device, class_weight):
 
             loss, logits = outputs[:2]
 
-            auc, acc, tn, fp, fn, tp = eval_metrics(logits.detach().cpu(),
-                                                    y_batch.detach().cpu())
+            #logits escono da rete
+            #se gli applico softmax ottengo probabilità
+            auc, acc, tn, fp, fn, tp  = eval_metrics(logits.detach().cpu(),
+                                                    y_batch.detach().cpu()) #y_true
+            if split.lower() == 'test':
+                calibration_plot(logits=logits.detach().cpu(), y=y_batch.detach().cpu())
 
             epoch_loss += loss.item()
             epoch_auc += auc.item()

@@ -120,7 +120,7 @@ def main():
                                                                                                                         dev_batch_generator,
                                                                                                                         num_batches,
                                                                                                                         device,
-                                                                                                                        class_weight)
+                                                                                                                        class_weight, split = 'val')
         eval_losses.append(valid_loss)
         eval_acc_list.append(valid_acc)
 
@@ -215,7 +215,7 @@ def main():
     test_loss, test_auc, test_acc, test_tn, test_fp, test_fn, test_tp, test_precision, test_recall, test_s_pred = evaluate(model,
                                                                                               test_batch_generator,
                                                                                               num_batches, device,
-                                                                                              class_weight)
+                                                                                              class_weight, split = 'test')
 
     content = f'Test Acc: {test_acc * 100:.2f}%, AUC: {test_auc * 100:.2f}%, TN: {test_tn}, FP: {test_fp}, FN: {test_fn}, TP: {test_tp}, Precision: {test_precision* 100:.2f}%, Recall: {test_recall* 100:.2f}%'
     print(content)

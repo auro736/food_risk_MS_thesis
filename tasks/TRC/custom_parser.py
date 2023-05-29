@@ -10,7 +10,7 @@ def my_parser():
 
     parser.add_argument("--model_type", default='bertweet-seq', type=str)
 
-    parser.add_argument('--n_epochs', default=2, type=int)
+    parser.add_argument('--n_epochs', default=1, type=int)
 
     parser.add_argument('--max_length', default=128, type=int)
 
