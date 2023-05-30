@@ -3,16 +3,14 @@ import torch.nn as nn
 from transformers import AutoConfig, AutoTokenizer
 
 import random
-import datetime
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.calibration import CalibrationDisplay
 from sklearn.metrics import ConfusionMatrixDisplay
 
-from TRC.utils import load_model, tokenize_with_new_mask, evaluate
+from TRC.utils import tokenize_with_new_mask, evaluate
 from common_utils import extract_from_dataframe, mask_batch_seq_generator
-from TRC.custom_parser import my_parser
 from TRC.models import ModelForWeightedSequenceClassification
 
 # TRC 
@@ -88,16 +86,13 @@ def main():
     model = model.to(device)
 
     train_data_path = '/home/cc/rora_tesi_new/data/train.p'
-    val_data_path = '/home/cc/rora_tesi_new/data/dev.p'
     test_data_path = '/home/cc/rora_tesi_new/data/test.p'
     
     need_columns = ['tweet_tokens', 'sentence_class']
 
-    X_train, Y_train = prepare_data(train_data_path, need_columns)
-    X_dev_raw, Y_dev = prepare_data(val_data_path, need_columns)
+    _, Y_train = prepare_data(train_data_path, need_columns)
     X_test_raw, Y_test = prepare_data(test_data_path, need_columns)
 
-    eval_batch_size = Y_dev.shape[0]
     test_batch_size = Y_test.shape[0]
 
     class_weight = None
