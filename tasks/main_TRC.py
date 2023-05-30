@@ -13,7 +13,7 @@ import torch
 from transformers import AutoTokenizer, AutoConfig, AdamW
 
 from TRC.custom_parser import my_parser
-from TRC.utils import tokenize_with_new_mask, load_model, train, evaluate
+from TRC.utils import tokenize_with_new_mask, load_model, train, evaluate, calibration_plot
 
 from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
 
@@ -116,11 +116,11 @@ def main():
         dev_batch_generator = mask_batch_seq_generator(X_dev, Y_dev, masks_dev,
                                                        min(X_dev.shape[0], args.eval_batch_size))
         num_batches = X_dev.shape[0] // min(X_dev.shape[0], args.eval_batch_size)
-        valid_loss, valid_auc, valid_acc, valid_tn, valid_fp, valid_fn, valid_tp, valid_precision, valid_recall, valid_s_pred = evaluate(model,
+        _, _, valid_loss, valid_auc, valid_acc, valid_tn, valid_fp, valid_fn, valid_tp, valid_precision, valid_recall, valid_s_pred = evaluate(model,
                                                                                                                         dev_batch_generator,
                                                                                                                         num_batches,
                                                                                                                         device,
-                                                                                                                        class_weight, split = 'val')
+                                                                                                                        class_weight)
         eval_losses.append(valid_loss)
         eval_acc_list.append(valid_acc)
 
@@ -212,14 +212,21 @@ def main():
     num_batches = X_test.shape[0] // args.test_batch_size
     test_batch_generator = mask_batch_seq_generator(X_test, Y_test, masks_test, args.test_batch_size)
 
-    test_loss, test_auc, test_acc, test_tn, test_fp, test_fn, test_tp, test_precision, test_recall, test_s_pred = evaluate(model,
+    logits, y_batch, test_loss, test_auc, test_acc, test_tn, test_fp, test_fn, test_tp, test_precision, test_recall, test_s_pred = evaluate(model,
                                                                                               test_batch_generator,
                                                                                               num_batches, device,
-                                                                                              class_weight, split = 'test')
+                                                                                              class_weight)
+    
+    
+    figure_name = 'calibration_curve.' + str(datetime.datetime.now()).replace(' ', '--').replace(':', '-').replace('.',
+                                                                                                         '-')+ '.png'
+    path = log_directory+figure_name
+
+    calibration_plot(logits=logits, y = y_batch, img_path=path)
 
     content = f'Test Acc: {test_acc * 100:.2f}%, AUC: {test_auc * 100:.2f}%, TN: {test_tn}, FP: {test_fp}, FN: {test_fn}, TP: {test_tp}, Precision: {test_precision* 100:.2f}%, Recall: {test_recall* 100:.2f}%'
     print(content)
-    logging.info(content)
+
     seq_pred_dir = log_directory + 'seq_prediction.npy'
     np.save(seq_pred_dir, test_s_pred)
 
@@ -243,10 +250,13 @@ def main():
     for key, value in performance_dict.items():
         if type(value) is np.int64:
             performance_dict[key] = int(value)
+            
     with open(args.performance_file, 'a+') as outfile:
         outfile.write(json.dumps(performance_dict) + '\n')
+
     if not args.save_model:
         shutil.rmtree(modeldir)
+
 
 
 if __name__ == '__main__':

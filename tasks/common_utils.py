@@ -5,6 +5,9 @@ from nervaluate import Evaluator
 
 import torch
 
+np.random.seed(42)
+
+
 
 def extract_from_dataframe(dataframe, columns):
     return_list = []
@@ -227,7 +230,8 @@ def pad_sequences(sequences, maxlen=None, dtype='int32',
 
 
 def multi_batch_generator(X, y, token_label, masks, batch_size):
-    """Primitive batch generator
+    """
+        Primitive batch generator
     """
     size = X.shape[0]
     indices = np.arange(size)
