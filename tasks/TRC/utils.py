@@ -127,7 +127,7 @@ def train(model, optimizer, train_batch_generator, num_batches, device, class_we
     print(f'\tClassification Loss: {epoch_loss / num_batches:.3f}')
     return epoch_loss / num_batches, epoch_auc / num_batches, epoch_acc / num_batches, epoch_tn, epoch_fp, epoch_fn, epoch_tp, epoch_precision, epoch_recall
 
-def calibration_plot(logits, y):
+def calibration_plot(logits, y, img_path):
     # logits = output dell'ultimo layer del classificatore senza softmax
     # y = batch ground truth
     
@@ -143,16 +143,10 @@ def calibration_plot(logits, y):
     # for probs in probabilities:
     #     pos_probs.append(probs[1])
     
-    log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] + '/' + args.model_type + '/' \
-                    + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
-                    str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
-    figure_name = 'calibration_curve.' + str(datetime.datetime.now()).replace(' ', '--').replace(':', '-').replace('.',
-                                                                                                         '-')+ '.png'
-    path = log_directory+figure_name
     disp = CalibrationDisplay.from_predictions(y, pos_probs, pos_label=1)
-    plt.savefig(path)
+    plt.savefig(img_path)
 
-def evaluate(model, test_batch_generator, num_batches, device, class_weight, split):
+def evaluate(model, test_batch_generator, num_batches, device, class_weight):
     """
     Main evaluation routine
     """
@@ -184,9 +178,7 @@ def evaluate(model, test_batch_generator, num_batches, device, class_weight, spl
             #se gli applico softmax ottengo probabilità
             auc, acc, tn, fp, fn, tp  = eval_metrics(logits.detach().cpu(),
                                                     y_batch.detach().cpu()) #y_true
-            if split.lower() == 'test':
-                calibration_plot(logits=logits.detach().cpu(), y=y_batch.detach().cpu())
-
+            
             epoch_loss += loss.item()
             epoch_auc += auc.item()
             epoch_acc += acc.item()
@@ -205,7 +197,7 @@ def evaluate(model, test_batch_generator, num_batches, device, class_weight, spl
         if (epoch_tp + epoch_fn) != 0:
             epoch_recall = epoch_tp / (epoch_tp + epoch_fn)
 
-    return epoch_loss / num_batches, epoch_auc / num_batches, epoch_acc / num_batches, epoch_tn, epoch_fp, epoch_fn, epoch_tp, epoch_precision, epoch_recall, output_s_pred
+    return logits.detach().cpu(), y_batch.detach().cpu(), epoch_loss / num_batches, epoch_auc / num_batches, epoch_acc / num_batches, epoch_tn, epoch_fp, epoch_fn, epoch_tp, epoch_precision, epoch_recall, output_s_pred
 
 
 def load_model(model_type, model_path, config):
