@@ -237,7 +237,7 @@ def main():
     num_batches = X_test.shape[0] // args.test_batch_size
     test_batch_generator = mask_batch_seq_generator(X_test, Y_test, masks_test, args.test_batch_size)
 
-    test_loss, test_acc, test_results, test_results_by_tag, test_t_pred, test_CR = predict(model,
+    _, _, test_loss, test_acc, test_results, test_results_by_tag, test_t_pred, test_CR = predict(model,
                                                                                            test_batch_generator,
                                                                                            num_batches, device,
                                                                                            label_map, class_weight)

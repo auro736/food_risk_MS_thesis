@@ -203,7 +203,6 @@ def predict(model, test_batch_generator, num_batches, device, label_map, class_w
             else:
                 eval_metrics = compute_metrics(logits.detach().cpu(), y_batch.detach().cpu(), label_map)
 
-            #print('sono in predict', eval_metrics)
             epoch_loss += loss.item()
             epoch_acc += eval_metrics["accuracy_score"]
             epoch_results.update(eval_metrics["results"])
@@ -214,7 +213,7 @@ def predict(model, test_batch_generator, num_batches, device, label_map, class_w
             else:
                 output_t_pred = np.concatenate([output_t_pred, logits.detach().cpu().numpy()], axis=0)
 
-    return epoch_loss / num_batches, epoch_acc / num_batches, epoch_results, \
+    return logits.detach().cpu(), y_batch_filtered, epoch_loss / num_batches, epoch_acc / num_batches, epoch_results, \
            epoch_results_by_tag, output_t_pred, epoch_CR
 
 
