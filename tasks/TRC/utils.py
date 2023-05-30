@@ -127,24 +127,25 @@ def train(model, optimizer, train_batch_generator, num_batches, device, class_we
     print(f'\tClassification Loss: {epoch_loss / num_batches:.3f}')
     return epoch_loss / num_batches, epoch_auc / num_batches, epoch_acc / num_batches, epoch_tn, epoch_fp, epoch_fn, epoch_tp, epoch_precision, epoch_recall
 
-def calibration_plot(logits, y, img_path):
-    # logits = output dell'ultimo layer del classificatore senza softmax
-    # y = batch ground truth
+# def calibration_plot(logits, y, img_path, model_name):
+#     # logits = output dell'ultimo layer del classificatore senza softmax
+#     # y = batch ground truth
     
-    m = nn.Softmax(dim=1)
-    probabilities = m(logits)
+#     m = nn.Softmax(dim=1)
+#     probabilities = m(logits)
 
-    # per creare calibration plot from_predictions la doc dice che vuole (y_true, prob)
-    # dove prob sono le prob della classe positiva, ossia in probabilities
-    # gli el sono liste [P(0), P(1)] devo prendermi solo P(1)
+#     # per creare calibration plot from_predictions la doc dice che vuole (y_true, prob)
+#     # dove prob sono le prob della classe positiva, ossia in probabilities
+#     # gli el sono liste [P(0), P(1)] devo prendermi solo P(1)
 
-    pos_probs = probabilities[:,1] 
-    # pos_probs = []
-    # for probs in probabilities:
-    #     pos_probs.append(probs[1])
+#     pos_probs = probabilities[:,1] 
+#     # pos_probs = []
+#     # for probs in probabilities:
+#     #     pos_probs.append(probs[1])
     
-    disp = CalibrationDisplay.from_predictions(y, pos_probs, pos_label=1)
-    plt.savefig(img_path)
+#     disp = CalibrationDisplay.from_predictions(y, pos_probs, pos_label=1)
+#     plt.title(model_name)
+#     plt.savefig(img_path)
 
 def evaluate(model, test_batch_generator, num_batches, device, class_weight):
     """

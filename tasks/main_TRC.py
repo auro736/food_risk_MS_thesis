@@ -222,7 +222,7 @@ def main():
                                                                                                          '-')+ '.png'
     path = log_directory+figure_name
 
-    calibration_plot(logits=logits, y = y_batch, img_path=path)
+    # calibration_plot(logits=logits, y = y_batch, img_path=path)
 
     content = f'Test Acc: {test_acc * 100:.2f}%, AUC: {test_auc * 100:.2f}%, TN: {test_tn}, FP: {test_fp}, FN: {test_fn}, TP: {test_tp}, Precision: {test_precision* 100:.2f}%, Recall: {test_recall* 100:.2f}%'
     print(content)
