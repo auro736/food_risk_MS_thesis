@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from sklearn.calibration import CalibrationDisplay
 from sklearn.metrics import ConfusionMatrixDisplay
 
-from EMD.models import ModelForTokenClassificationWithCRF
+from EMD.models import ModelForTokenClassificationWithCRF, ModelForWeightedTokenClassification
 from common_utils import extract_from_dataframe, mask_batch_seq_generator
 from EMD.utils import tokenize_with_new_mask, predict
 
@@ -131,6 +131,9 @@ def main():
     print(f'Test R Strict: {test_R * 100:.2f}%')
     print(f'Test F1 Strict: {test_F * 100:.2f}%')
 
+    print(len(logits))
+    print(logits.shape)
+
     softmax = nn.Softmax(dim=1)
     probabilities = softmax(logits)
 
@@ -138,16 +141,16 @@ def main():
 
     # print(probabilities[0][0])
     # print(len(probabilities[0][0]))
-    # print(len(y_true))
+    print(len(y_true))
 
     # print(probabilities[0], y_true[0])
 
-    cal_path = log_directory + 'calibration_curve.png'
+    # cal_path = log_directory + 'calibration_curve.png'
 
     
-    # rendere il problema binario per calibration curve
-    # 1 classe vs le altre, prendo prob della classe considerata e calcolo prob delle altre classi come 1-probclasse
-    calibration_plot(y_true=y_true, probabilities=probabilities, img_path=cal_path, model_name=model_name)
+    # # rendere il problema binario per calibration curve
+    # # 1 classe vs le altre, prendo prob della classe considerata e calcolo prob delle altre classi come 1-probclasse
+    # calibration_plot(y_true=y_true, probabilities=probabilities, img_path=cal_path, model_name=model_name)
 
 if __name__ == '__main__':
     main()

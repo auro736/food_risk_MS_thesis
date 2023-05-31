@@ -195,10 +195,21 @@ def predict(model, test_batch_generator, num_batches, device, label_map, class_w
                             class_weight=class_weight)
 
             loss, logits = outputs[:2]
+            # logits ha shape (412, 128, 9)
+            # 412 lunghezza test ds
+            # 128 lunghezza max della sequenza
+            # 9 numero classi
+            
+            # print(logits[0][0])
+            # print(logits[0][1])
 
             if type(model) in [ModelForTokenClassificationWithCRF, ModelForTokenClassificationWithCRFDeberta]:   
+                # ha shape (412, 128)
                 y_batch = y_batch.detach().cpu()
+                # diventa una lista di liste di lunghezza 412
+                # ogni elemento delle liste interne rappresentano la classe associata ai token del tweet
                 y_batch_filtered = [y_batch[i][y_batch[i] >= 0].tolist() for i in range(y_batch.shape[0])]
+                # outputs[2] è una lista di lista con le prediction
                 eval_metrics = compute_crf_metrics(outputs[2], y_batch_filtered, label_map)
             else:
                 eval_metrics = compute_metrics(logits.detach().cpu(), y_batch.detach().cpu(), label_map)

@@ -11,7 +11,7 @@ from common_utils import pad_sequences
 from TRC.custom_parser import my_parser
 from TRC.models import ModelForWeightedSequenceClassification, ModelForWeightedSequenceClassificationDeberta
 
-args = my_parser()
+# args = my_parser()
 
 def eval_metrics(preds, y):
 
