@@ -33,8 +33,8 @@ def load_local_model(model_path, config_path, device, model_name):
 def prepare_data(data_path, need_columns):
 
     data = pd.read_pickle(data_path)
-    X, Y = extract_from_dataframe(data, need_columns)
-    return X, Y
+    list = extract_from_dataframe(data, need_columns)
+    return list
 
 def create_weight(Y_train):
     # weight of each class in loss function

@@ -210,7 +210,7 @@ def predict(model, test_batch_generator, num_batches, device, label_map, class_w
                 # ogni elemento delle liste interne rappresentano la classe associata ai token del tweet
                 y_batch_filtered = [y_batch[i][y_batch[i] >= 0].tolist() for i in range(y_batch.shape[0])]
                 # outputs[2] è una lista di lista con le prediction
-                eval_metrics = compute_crf_metrics(outputs[2], y_batch_filtered, label_map)
+                eval_metrics, true, preds = compute_crf_metrics(outputs[2], y_batch_filtered, label_map)
             else:
                 eval_metrics = compute_metrics(logits.detach().cpu(), y_batch.detach().cpu(), label_map)
 
@@ -224,7 +224,7 @@ def predict(model, test_batch_generator, num_batches, device, label_map, class_w
             else:
                 output_t_pred = np.concatenate([output_t_pred, logits.detach().cpu().numpy()], axis=0)
 
-    return logits.detach().cpu(), y_batch_filtered, epoch_loss / num_batches, epoch_acc / num_batches, epoch_results, \
+    return logits.detach().cpu(),true,preds, epoch_loss / num_batches, epoch_acc / num_batches, epoch_results, \
            epoch_results_by_tag, output_t_pred, epoch_CR
 
 
