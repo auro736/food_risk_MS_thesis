@@ -1,8 +1,8 @@
 import torch
-import torch.nn as nn
 from transformers import AutoConfig
 
-import random
+
+import string
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -57,6 +57,32 @@ def confusion_matrix(probabilities, y_true, model_name, path):
     conf_mat = ConfusionMatrixDisplay.from_predictions(y_true, y_pred, labels=[0, 1], colorbar=False)
     plt.title(model_name)
     plt.savefig(path)
+
+
+def create_token_dict(shap_values):
+    token_dict = {}
+    val = [shap_values[i] for i in range(len(shap_values))]
+    for el in val:
+        for i in range(len(el)-1):
+            token = el[i].data
+            # print(token)
+            token = token.strip()
+            token = token.lower()
+            if token not in string.punctuation and token != 'USER' and token != 'HTTPURL' and token != '...' and len(token) >= 3:
+                # print(token)
+                shap_val = el[i].values
+                pos = shap_val[1]
+                if token not in token_dict.keys():
+                    token_dict[token] = pos
+                else:
+                    token_dict[token] += pos
+    return token_dict
+
+def get_top_n(n,token_dict):
+    tmp = {}
+    for i,k,v in zip(range(n), token_dict.keys(), token_dict.values()):
+        tmp[k] = v
+    return tmp
 
 def tweet_errati(probabilities, tweet_test, y_true):
 

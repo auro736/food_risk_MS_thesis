@@ -74,7 +74,7 @@ def main():
     confusion_matrix(probabilities, y_true=y_true, model_name =model_name, path = conf_path)
 
     df_errati = tweet_errati(probabilities=probabilities, tweet_test=tweet_test, y_true=y_true)
-    df_errati.to_csv('tweet_errati.csv', header= True, index = True)
+    df_errati.to_csv(log_directory+'tweet_errati.csv', header= True, index = True)
     df_errati.head()
 
 if __name__ == '__main__':
