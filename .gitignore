@@ -1,0 +1,5 @@
+# Ignora tutte le cartelle pycache nel progetto
+__pycache__/
+
+# Ignora tutte le cartelle pycache nelle sottocartelle
+**/__pycache__/
