@@ -71,7 +71,7 @@ def create_token_dict(shap_values):
             if token not in string.punctuation and token != 'USER' and token != 'HTTPURL' and token != '...' and len(token) >= 3:
                 # print(token)
                 shap_val = el[i].values
-                pos = shap_val[1]
+                pos = abs(shap_val[1])
                 if token not in token_dict.keys():
                     token_dict[token] = pos
                 else:
@@ -84,7 +84,7 @@ def get_top_n(n,token_dict):
         tmp[k] = v
     return tmp
 
-def tweet_errati(probabilities, tweet_test, y_true):
+def create_analysis_csv(probabilities, tweet_test, y_true):
 
     y_values, indices = torch.max(probabilities, 1)
     # dato che la posizione nella lista di 2 elementi della probabilità 
@@ -92,10 +92,14 @@ def tweet_errati(probabilities, tweet_test, y_true):
     y_pred = indices.detach().cpu().numpy()
 
     # error is a list of list [indice dell'errore,tweet_errato, y_true, y_pred]
-    error = [[i, tweet_test[i], y_true[i], y_pred[i]] for i in range(len(y_true)) if y_true[i] != y_pred[i]]
-    error = np.array(error)
-    to_save = error[:,1:]
+    errors = [[i, tweet_test[i], y_true[i], y_pred[i]] for i in range(len(y_true)) if y_true[i] != y_pred[i]]
+    errors = np.array(errors)
+
+    corr = [[i, tweet_test[i], y_true[i], y_pred[i]] for i in range(len(y_true)) if y_true[i] == y_pred[i]]
+    corr = np.array(corr)
 
     cols = ['Tweet', 'True label', 'Pred label']
-    df = pd.DataFrame(to_save, columns=cols)
-    return df 
+    errors_df = pd.DataFrame(errors[:,1:], columns=cols)
+    corr_df = pd.DataFrame(corr[:,1:], columns=cols)
+    
+    return errors_df, corr_df
