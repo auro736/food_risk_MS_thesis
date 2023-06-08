@@ -67,11 +67,11 @@ def create_token_dict(shap_values):
             token = el[i].data
             # print(token)
             token = token.strip()
-            token = token.lower()
-            if token not in string.punctuation and token != 'USER' and token != 'HTTPURL' and token != '...' and len(token) >= 3:
+            if token not in string.punctuation and token != 'USER' and token != 'HTTPURL' and token != 'HTTP' and token!='URL' and token != '...' and len(token) >= 3:
                 # print(token)
                 shap_val = el[i].values
                 pos = abs(shap_val[1])
+                token = token.lower()
                 if token not in token_dict.keys():
                     token_dict[token] = pos
                 else:
