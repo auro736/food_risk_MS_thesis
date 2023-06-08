@@ -66,11 +66,9 @@ def confusion_matrix(probabilities, y_true, model_name, path):
     plt.title(model_name)
     plt.savefig(path)
 
-def to_binary(probabilities):
-    lista = []
+
   
        
-
 
 def main():
 
@@ -136,8 +134,6 @@ def main():
 
     softmax = nn.Softmax(dim=1)
     probabilities = softmax(logits)
-
-    to_binary(probabilities)
 
     # print(probabilities[0][0])
     # print(len(probabilities[0][0]))
