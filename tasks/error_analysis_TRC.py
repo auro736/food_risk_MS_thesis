@@ -37,10 +37,12 @@ def main():
     train_data_path = '/home/cc/rora_tesi_new/data/train.p'
     test_data_path = '/home/cc/rora_tesi_new/data/test.p'
     
-    need_columns = ['tweet_tokens', 'sentence_class']
+    need_columns = ['tweet','tweet_tokens', 'sentence_class']
 
-    _, Y_train = prepare_data(train_data_path, need_columns)
-    X_test_raw, Y_test = prepare_data(test_data_path, need_columns)
+    _, _, Y_train = prepare_data(train_data_path, need_columns)
+    tweet_test, X_test_raw, Y_test = prepare_data(test_data_path, need_columns)
+
+    
 
     test_batch_size = Y_test.shape[0]
 
@@ -71,6 +73,9 @@ def main():
     conf_path = log_directory + 'confusion_matrix.png'
     confusion_matrix(probabilities, y_true=y_true, model_name =model_name, path = conf_path)
 
+    df_errati = tweet_errati(probabilities=probabilities, tweet_test=tweet_test, y_true=y_true)
+    df_errati.to_csv('tweet_errati.csv', header= True, index = True)
+    df_errati.head()
 
 if __name__ == '__main__':
     main()

@@ -152,6 +152,8 @@ def evaluate(model, test_batch_generator, num_batches, device, class_weight):
 
             loss, logits = outputs[:2]
 
+            
+
             #logits escono da rete
             #se gli applico softmax ottengo probabilità
             auc, acc, tn, fp, fn, tp  = eval_metrics(logits.detach().cpu(),
@@ -175,7 +177,7 @@ def evaluate(model, test_batch_generator, num_batches, device, class_weight):
         if (epoch_tp + epoch_fn) != 0:
             epoch_recall = epoch_tp / (epoch_tp + epoch_fn)
 
-    return logits.detach().cpu(), y_batch.detach().cpu(), epoch_loss / num_batches, epoch_auc / num_batches, epoch_acc / num_batches, epoch_tn, epoch_fp, epoch_fn, epoch_tp, epoch_precision, epoch_recall, output_s_pred
+    return logits.detach().cpu(), y_batch.detach().cpu().numpy(), epoch_loss / num_batches, epoch_auc / num_batches, epoch_acc / num_batches, epoch_tn, epoch_fp, epoch_fn, epoch_tp, epoch_precision, epoch_recall, output_s_pred
 
 
 def load_model(model_type, model_path, config):

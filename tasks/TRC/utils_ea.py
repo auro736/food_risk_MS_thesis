@@ -57,3 +57,19 @@ def confusion_matrix(probabilities, y_true, model_name, path):
     conf_mat = ConfusionMatrixDisplay.from_predictions(y_true, y_pred, labels=[0, 1], colorbar=False)
     plt.title(model_name)
     plt.savefig(path)
+
+def tweet_errati(probabilities, tweet_test, y_true):
+
+    y_values, indices = torch.max(probabilities, 1)
+    # dato che la posizione nella lista di 2 elementi della probabilità 
+    # rappresenta la prob della label
+    y_pred = indices.detach().cpu().numpy()
+
+    # error is a list of list [indice dell'errore,tweet_errato, y_true, y_pred]
+    error = [[i, tweet_test[i], y_true[i], y_pred[i]] for i in range(len(y_true)) if y_true[i] != y_pred[i]]
+    error = np.array(error)
+    to_save = error[:,1:]
+
+    cols = ['Tweet', 'True label', 'Pred label']
+    df = pd.DataFrame(to_save, columns=cols)
+    return df 
