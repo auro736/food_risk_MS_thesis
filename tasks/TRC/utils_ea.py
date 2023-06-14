@@ -1,11 +1,12 @@
 import torch
 from transformers import AutoConfig
 
-
+import nltk
 import string
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from better_profanity import profanity
 from sklearn.calibration import CalibrationDisplay
 from sklearn.metrics import ConfusionMatrixDisplay
 
@@ -59,8 +60,12 @@ def confusion_matrix(probabilities, y_true, model_name, path):
     plt.savefig(path)
 
 
-def create_token_dict(shap_values):
+def create_token_dict(shap_values, ind_to_get):
+    print('indice di shap preso: ', ind_to_get)
     token_dict = {}
+    nltk.download('stopwords')
+    profanity.load_censor_words()
+    stop_words = set(nltk.corpus.stopwords.words('english'))
     val = [shap_values[i] for i in range(len(shap_values))]
     for el in val:
         for i in range(len(el)-1):
@@ -70,12 +75,14 @@ def create_token_dict(shap_values):
             if token not in string.punctuation and token != 'USER' and token != 'HTTPURL' and token != 'HTTP' and token!='URL' and token != '...' and len(token) >= 3:
                 # print(token)
                 shap_val = el[i].values
-                pos = abs(shap_val[1])
+                pos = abs(shap_val[ind_to_get])
                 token = token.lower()
-                if token not in token_dict.keys():
-                    token_dict[token] = pos
-                else:
-                    token_dict[token] += pos
+                if token not in stop_words:
+                    if not profanity.contains_profanity(token):
+                        if token not in token_dict.keys():
+                            token_dict[token] = pos
+                        else:
+                            token_dict[token] += pos
     return token_dict
 
 def get_top_n(n,token_dict):
