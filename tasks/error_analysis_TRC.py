@@ -73,12 +73,19 @@ def main():
     conf_path = log_directory + 'confusion_matrix.png'
     confusion_matrix(probabilities, y_true=y_true, model_name =model_name, path = conf_path)
 
-    df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=tweet_test, y_true=y_true)
+
+    df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=tweet_test, tweet_token = X_test_raw, y_true=y_true)
     df_errati.to_csv(log_directory+'tweet_errati.csv', header= True, index = True)
     df_errati.head()
 
     df_corretti.to_csv(log_directory+'tweet_corretti.csv', header= True, index = True)
     df_corretti.head()
+
+    # tokens_1 = df_corretti['Tweet tok'][0]
+    # print('aaaaaa', type(tokens_1))
+
+    # df_errati.to_pickle(log_directory+'tweet_errati.pkl')
+    # df_corretti.to_pickle(log_directory+'tweet_corretti.pkl')
 
 if __name__ == '__main__':
     main()
