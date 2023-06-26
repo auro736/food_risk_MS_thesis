@@ -15,22 +15,22 @@ SEED = 42
 def create_entity(x):
     entity_list = list()
     stop_words = set(nltk.corpus.stopwords.words('english'))
-    for i,t in enumerate(x['token']):
+    for i,t in enumerate(x['tokens']):
         prod = [x.lower() for x in x['product'].split(' ')]
         suppl =  [x.lower() for x in x['supplier'].split(' ')]
 #         haz = [x.lower() for x in x['hazard'].split(' ')]
         haz = x['hazard'].lower()
         t = t.lower()
-        if t in prod and x['token'][i-1] not in prod  :
+        if t in prod and x['tokens'][i-1] not in prod  :
             entity_list.append('B-food')
-        elif t in prod and x['token'][i-1] in prod:
+        elif t in prod and x['tokens'][i-1] in prod:
             entity_list.append('I-food')
-        elif t in suppl  and x['token'][i-1] not in suppl :
-            entity_list.append('B-loc')
-        elif t in suppl and x['token'][i-1] in suppl:
-            entity_list.append('I-loc')
+        elif t in suppl  and x['tokens'][i-1] not in suppl :
+            entity_list.append('B-suppl')
+        elif t in suppl and x['tokens'][i-1] in suppl:
+            entity_list.append('I-suppl')
         elif t == haz:
-            entity_list.append('B-haz')
+            entity_list.append('B-hazard')
 #         elif t in haz and x['token'][i-1] in haz and t not in stop_words:
 #             entity_list.append('B-haz')
 #         elif t in haz and x['token'][i-1] in haz and t not in stop_words:
@@ -46,10 +46,11 @@ def preprocess_incidents(df):
 
     df['description'] = df.apply(lambda x: ''.join(x['description'].splitlines()), axis = 1)
     df['description'] = df.apply(lambda x: " ".join(x['description'].split()) , axis = 1)
-    df['token'] = [x.split(' ') for x in df['description'].values.tolist()]
+    df['tokens'] = [x.split(' ') for x in df['description'].values.tolist()]
 
     
     df['entity_label'] = df.apply(lambda x: create_entity(x), axis = 1)
+    df['sentence_class'] = 1
 
     # ho annotato B/I food, B/I suppl, solo B hazards
 
@@ -78,9 +79,9 @@ def main():
 
     # incidents_annotated.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_annotated.pickle')
     
-    train.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/train_inc.pickle')
-    val.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/val_inc.pickle')
-    test.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/test_inc.pickle')
+    train.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/train_inc.p')
+    val.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/val_inc.p')
+    test.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/test_inc.p')
 
 
 
