@@ -68,7 +68,21 @@ def main():
 
     # incidents_annotated.to_csv('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_annotated.csv', header=True)
 
-    incidents_annotated.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_annotated.pickle')
+    train, test = train_test_split(incidents_annotated, test_size = 0.25, random_state=SEED, shuffle=True)
+
+    train, val = train_test_split(train, test_size=0.2, random_state=SEED, shuffle=True)
+
+    print('train', len(train))
+    print('val', len(val))
+    print('test', len(test))
+
+    # incidents_annotated.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_annotated.pickle')
+    
+    train.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/train_inc.pickle')
+    val.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/val_inc.pickle')
+    test.to_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/test_inc.pickle')
+
+
 
 
     # ASSIGN_WEIGHT = True
