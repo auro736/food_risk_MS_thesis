@@ -88,10 +88,10 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #device = "cpu"
-    model_name = 'microsoft/deberta-v3-large'
+    model_name = 'xlm-roberta-large-finetuned-conll03-english'
 
-    model_path = '/home/cc/rora_tesi_new/log/log_EMD/deberta-v3-large/bertweet-token-crf/20_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-    config_path = '/home/cc/rora_tesi_new/log/log_EMD/deberta-v3-large/bertweet-token-crf/20_epoch/data/True_weight/42_seed/saved-model/config.json'
+    model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+    config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
 
 
     X_train_raw, Y_train_raw, seq_train = extract_from_dataframe(train_inc, need_columns)
