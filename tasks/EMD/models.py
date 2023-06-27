@@ -244,6 +244,7 @@ class ModelForTokenClassificationWithCRFDeberta(PreTrainedModel):
         self.classifier = nn.Linear(config.hidden_size, config.num_labels)
         self.crf = CRF(num_tags=config.num_labels, batch_first=True)
 
+
     def forward(
         self,
         input_ids=None,

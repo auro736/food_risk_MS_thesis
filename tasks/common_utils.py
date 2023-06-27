@@ -68,7 +68,6 @@ def compute_metrics(predictions, label_ids, label_map):
 def align_predictions_crf(predictions, tag_ids, label_map):
     # tag_ids is a list of lists the true label: [[1,3,4],[3,5,6,7,8],[0,3]]
     label_map_i = {y: x for x, y in label_map.items()}
-    print(label_map_i)
     batch_size = len(predictions)  # prediction: a list of lists with different length
     out_label_list = [[] for _ in range(batch_size)]
     preds_list = [[] for _ in range(batch_size)]

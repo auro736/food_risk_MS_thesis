@@ -30,16 +30,22 @@ torch.manual_seed(SEED)
 def load_local_model(len_labels, model_path, config_path, device, model_name):
 
     config = AutoConfig.from_pretrained(config_path)
-    # config.update({'num_labels': len_labels, })
 
     if 'deberta' in model_name:
         print('deberta')
         model = ModelForTokenClassificationWithCRFDeberta(model_name=model_name,config=config)
     else:
         model = ModelForTokenClassificationWithCRF(model_name=model_name,config=config)
+        
     checkpoint = torch.load(model_path, map_location=device)
     model.load_state_dict(checkpoint)
     model.config.update({'num_labels': len_labels, })
+    model.num_labels = config.num_labels
+    model.classifier = nn.Linear(config.hidden_size, config.num_labels)
+    model.crf = CRF(num_tags=config.num_labels, batch_first=True)
+    print(model.num_labels)
+    print(model.classifier)
+    print(model.crf)
 
     return model
 
