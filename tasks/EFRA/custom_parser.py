@@ -10,17 +10,17 @@ def my_parser():
     
     parser.add_argument("--task_type", default='entity_detection', type=str)
 
-    parser.add_argument('--n_epochs', default=2, type=int)
+    parser.add_argument('--n_epochs', default= 8, type=int)
 
     parser.add_argument('--max_length', default=128, type=int)
 
     parser.add_argument('--rnn_hidden_size', default=384, type=int)
 
-    parser.add_argument('--batch_size', default=8, type=int)
+    parser.add_argument('--batch_size', default=4, type=int)
 
-    parser.add_argument('--eval_batch_size', default=300, type=int)
+    parser.add_argument('--eval_batch_size', default=4, type=int)
 
-    parser.add_argument('--test_batch_size', default=300, type=int)
+    parser.add_argument('--test_batch_size', default=4, type=int)
 
     parser.add_argument('--seed', default=42, type=int)
 

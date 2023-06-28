@@ -74,6 +74,8 @@ def main():
     val_inc = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/val_inc.p')
     test_inc = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/test_inc.p')
 
+    print(len(train_inc))
+
     # print(train_inc.head())
 
     need_columns = ['tokens']
@@ -97,8 +99,8 @@ def main():
     X_train_raw, Y_train_raw, seq_train = extract_from_dataframe(train_inc, need_columns)
     X_dev_raw, Y_dev_raw, seq_dev = extract_from_dataframe(val_inc, need_columns)
     X_test_raw, Y_test_raw, seq_test = extract_from_dataframe(test_inc, need_columns)
-    args.eval_batch_size = seq_dev.shape[0]
-    args.test_batch_size = seq_test.shape[0]
+    # args.eval_batch_size = seq_dev.shape[0]
+    # args.test_batch_size = seq_test.shape[0]
 
     with open(os.path.join(args.data, args.label_map), 'r') as fp:
         label_map = json.load(fp)
@@ -121,7 +123,6 @@ def main():
         class_weight = [Y_train.shape[0] / (Y_train == i).sum() for i in range(len(labels))]
         class_weight = torch.FloatTensor(class_weight)
 
-    print('qua')
 
     # tokenizer = AutoTokenizer.from_pretrained(model_name, normalization = True)
     # # config = AutoConfig.from_pretrained(config_path)
