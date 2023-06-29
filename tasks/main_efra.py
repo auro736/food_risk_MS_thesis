@@ -27,6 +27,7 @@ random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
 
+
 def load_local_model(len_labels, model_path, config_path, device, model_name):
 
     config = AutoConfig.from_pretrained(config_path)
@@ -112,7 +113,6 @@ def main():
     model = model.to(device)
   
 
-    # MAGARI SALVALI IN PICKLE COSì NON CI METTE NA VITA
     X_train, masks_train, Y_train = tokenize_with_new_mask(X_train_raw, args.max_length, tokenizer, Y_train_raw, label_map)
     X_dev, masks_dev, Y_dev = tokenize_with_new_mask(X_dev_raw, args.max_length, tokenizer, Y_dev_raw, label_map)
     X_test, masks_test, Y_test = tokenize_with_new_mask(X_test_raw, 128, tokenizer, Y_test_raw, label_map)
