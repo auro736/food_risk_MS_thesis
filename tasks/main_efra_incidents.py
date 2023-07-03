@@ -12,7 +12,7 @@ import torch
 from transformers import AutoTokenizer, AutoConfig, AdamW
 
 from EMD.models import *
-from EMD.utils import tokenize_with_new_mask, train, evaluate, predict, load_model
+from EMD.utils import tokenize_with_new_mask, train, evaluate, predict, load_model, load_local_EMD_model
 
 from EFRA.custom_parser import my_parser
 
@@ -28,27 +28,27 @@ np.random.seed(SEED)
 torch.manual_seed(SEED)
 
 
-def load_local_model(len_labels, model_path, config_path, device, model_name):
+# def load_local_model(len_labels, model_path, config_path, device, model_name):
 
-    config = AutoConfig.from_pretrained(config_path)
+#     config = AutoConfig.from_pretrained(config_path)
 
-    if 'deberta' in model_name:
-        print('deberta')
-        model = ModelForTokenClassificationWithCRFDeberta(model_name=model_name,config=config)
-    else:
-        model = ModelForTokenClassificationWithCRF(model_name=model_name,config=config)
+#     if 'deberta' in model_name:
+#         print('deberta')
+#         model = ModelForTokenClassificationWithCRFDeberta(model_name=model_name,config=config)
+#     else:
+#         model = ModelForTokenClassificationWithCRF(model_name=model_name,config=config)
         
-    checkpoint = torch.load(model_path, map_location=device)
-    model.load_state_dict(checkpoint)
-    model.config.update({'num_labels': len_labels, })
-    model.num_labels = config.num_labels
-    model.classifier = nn.Linear(config.hidden_size, config.num_labels)
-    model.crf = CRF(num_tags=config.num_labels, batch_first=True)
-    print(model.num_labels)
-    print(model.classifier)
-    print(model.crf)
+#     checkpoint = torch.load(model_path, map_location=device)
+#     model.load_state_dict(checkpoint)
+#     model.config.update({'num_labels': len_labels, })
+#     model.num_labels = config.num_labels
+#     model.classifier = nn.Linear(config.hidden_size, config.num_labels)
+#     model.crf = CRF(num_tags=config.num_labels, batch_first=True)
+#     print(model.num_labels)
+#     print(model.classifier)
+#     print(model.crf)
 
-    return model
+#     return model
 
 def main():
 
@@ -118,7 +118,14 @@ def main():
         print('USING FINETUNED MODEL')
         model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
         config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
-        model = load_local_model(len(labels), model_path, config_path, device, model_name)
+        model = load_local_EMD_model(model_path, config_path, device, model_name)
+        model.config.update({'num_labels': len(labels), })
+        model.num_labels = config.num_labels
+        model.classifier = nn.Linear(config.hidden_size, config.num_labels)
+        model.crf = CRF(num_tags=config.num_labels, batch_first=True)
+        print(model.num_labels)
+        print(model.classifier)
+        print(model.crf)
     else: 
         print('NO FINETUNED')
         config =  config = AutoConfig.from_pretrained(args.bert_model)

@@ -86,19 +86,6 @@ def main():
 
 
 
-    # ASSIGN_WEIGHT = True
-
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # #device = "cpu"
-    # model_name = 'cardiffnlp/twitter-roberta-large-2022-154m'
-
-    # model_path = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/20_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-    # config_path = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/20_epoch/data/True_weight/42_seed/saved-model/config.json'
-
-    # tokenizer = AutoTokenizer.from_pretrained(model_name, normalization = True)
-    # model = load_local_model(model_path, config_path, device, model_name)
-    # model = model.to(device)
-
 
 if __name__ == '__main__':
     main()

@@ -3,9 +3,32 @@ from tqdm import tqdm
 
 import torch
 from torch.autograd import Variable
+from transformers import AutoConfig
 
 from common_utils import pad_sequences, compute_metrics, compute_crf_metrics
 from EMD.models import ModelForTokenClassificationWithCRF, ModelForTokenClassificationWithCRFDeberta, ModelForWeightedTokenClassification, ModelForWeightedTokenClassificationDeberta
+
+def load_local_EMD_model(model_path, config_path, device, model_name):
+
+    config = AutoConfig.from_pretrained(config_path)
+
+    if 'deberta' in model_name:
+        print('deberta')
+        model = ModelForTokenClassificationWithCRFDeberta(model_name=model_name,config=config)
+    else:
+        model = ModelForTokenClassificationWithCRF(model_name=model_name,config=config)
+        
+    checkpoint = torch.load(model_path, map_location=device)
+    model.load_state_dict(checkpoint)
+    # model.config.update({'num_labels': len_labels, })
+    # model.num_labels = config.num_labels
+    # model.classifier = nn.Linear(config.hidden_size, config.num_labels)
+    # model.crf = CRF(num_tags=config.num_labels, batch_first=True)
+    # print(model.num_labels)
+    # print(model.classifier)
+    # print(model.crf)
+
+    return model
 
 def simple_tokenize(orig_tokens, tokenizer, orig_labels, label_map, max_seq_length):
     """

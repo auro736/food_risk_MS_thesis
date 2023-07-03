@@ -4,10 +4,11 @@ from transformers import AutoTokenizer
 
 import random
 import numpy as np
+import pandas as pd
 
-from TRC.utils import tokenize_with_new_mask, evaluate
-from TRC.utils_ea import *
-from common_utils import mask_batch_seq_generator
+from TRC.utils import tokenize_with_new_mask, evaluate, load_local_TRC_model, create_weight, calibration_plot, confusion_matrix_display, create_analysis_csv
+# from TRC.utils_ea import *
+from common_utils import mask_batch_seq_generator, extract_from_dataframe
 
 # TRC 
 
@@ -30,19 +31,23 @@ def main():
     model_path = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/20_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
     config_path = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/20_epoch/data/True_weight/42_seed/saved-model/config.json'
 
-    model = load_local_model(model_path, config_path, device, model_name)
+    model = load_local_TRC_model(model_path, config_path, device, model_name)
     
     model = model.to(device)
 
-    train_data_path = '/home/cc/rora_tesi_new/data/train.p'
-    test_data_path = '/home/cc/rora_tesi_new/data/test.p'
+    train_data_path = '/home/cc/rora_tesi_new/data/Tweet-Fid/train.p'
+    test_data_path = '/home/cc/rora_tesi_new/data/Tweet-Fid/test.p'
     
     need_columns = ['tweet','tweet_tokens', 'sentence_class']
 
-    _, _, Y_train = prepare_data(train_data_path, need_columns)
-    tweet_test, X_test_raw, Y_test = prepare_data(test_data_path, need_columns)
+    train_ds = pd.read_pickle(train_data_path)
+    test_ds = pd.read_pickle(test_data_path)
 
-    
+    _, _, Y_train = extract_from_dataframe(train_ds, need_columns)
+    tweet_test, X_test_raw, Y_test = extract_from_dataframe(test_ds, need_columns)
+
+    # _, _, Y_train = prepare_data(train_data_path, need_columns)
+    # tweet_test, X_test_raw, Y_test = prepare_data(test_data_path, need_columns)
 
     test_batch_size = Y_test.shape[0]
 
@@ -71,7 +76,7 @@ def main():
     calibration_plot(probabilities, y_true = y_true, img_path=cal_path, model_name=model_name)
 
     conf_path = log_directory + 'confusion_matrix.png'
-    confusion_matrix(probabilities, y_true=y_true, model_name =model_name, path = conf_path)
+    confusion_matrix_display(probabilities, y_true=y_true, model_name =model_name, path = conf_path)
 
 
     df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=tweet_test, tweet_token = X_test_raw, y_true=y_true)
