@@ -12,7 +12,7 @@ import torch
 from transformers import AutoTokenizer, AutoConfig, AdamW
 
 from EMD.models import *
-from EMD.utils import tokenize_with_new_mask, train, evaluate, predict
+from EMD.utils import tokenize_with_new_mask, train, evaluate, predict, load_model
 
 from EFRA.custom_parser import my_parser
 
@@ -53,10 +53,15 @@ def load_local_model(len_labels, model_path, config_path, device, model_name):
 def main():
 
     args = my_parser()
-
-    log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] + '/' + args.model_type + '/' \
+    if args.from_finetuned:
+        log_directory = args.log_dir +'/' + str(args.bert_model).split('/')[-1] + '/from_finetuned' + '/' + args.model_type + '/' \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
                     str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
+    else:
+        log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] + '/no_finetuned' + '/' + args.model_type + '/' \
+                    + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
+                    str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
+        
     log_filename = 'log.' + str(datetime.datetime.now()).replace(' ', '--').replace(':', '-').replace('.', '-') + '.txt'
 
     if not os.path.exists(log_directory):
@@ -93,8 +98,7 @@ def main():
     #device = "cpu"
     model_name = 'xlm-roberta-large-finetuned-conll03-english'
 
-    model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-    config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
+    
 
 
     X_train_raw, Y_train_raw, seq_train = extract_from_dataframe(train_inc, need_columns)
@@ -109,7 +113,18 @@ def main():
     labels = list(label_map.keys())
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, normalization = True)
-    model = load_local_model(len(labels), model_path, config_path, device, model_name)
+
+    if args.from_finetuned:
+        print('USING FINETUNED MODEL')
+        model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+        config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
+        model = load_local_model(len(labels), model_path, config_path, device, model_name)
+    else: 
+        print('NO FINETUNED')
+        config =  config = AutoConfig.from_pretrained(args.bert_model)
+        config.update({'num_labels': len(labels)})
+        model = load_model(args.model_type, args.bert_model, config)
+
     model = model.to(device)
   
 

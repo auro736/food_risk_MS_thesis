@@ -4,13 +4,15 @@ def my_parser():
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument("--from_finetuned", default = True, action = 'store_true')
+
     parser.add_argument("--bert_model", default='xlm-roberta-large-finetuned-conll03-english', type=str)
 
     parser.add_argument("--model_type", default='bertweet-token-crf', type=str)
     
     parser.add_argument("--task_type", default='entity_detection', type=str)
 
-    parser.add_argument('--n_epochs', default= 8, type=int)
+    parser.add_argument('--n_epochs', default=6, type=int)
 
     parser.add_argument('--max_length', default=128, type=int)
 
