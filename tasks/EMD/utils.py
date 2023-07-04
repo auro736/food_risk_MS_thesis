@@ -28,7 +28,7 @@ def load_local_EMD_model(model_path, config_path, device, model_name):
     # print(model.classifier)
     # print(model.crf)
 
-    return model
+    return model, config
 
 def simple_tokenize(orig_tokens, tokenizer, orig_labels, label_map, max_seq_length):
     """

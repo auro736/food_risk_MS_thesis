@@ -18,11 +18,11 @@ def my_parser():
 
     parser.add_argument('--rnn_hidden_size', default=384, type=int)
 
-    parser.add_argument('--batch_size', default=4, type=int)
+    parser.add_argument('--batch_size', default=16, type=int)
 
-    parser.add_argument('--eval_batch_size', default=4, type=int)
+    parser.add_argument('--eval_batch_size', default=16, type=int)
 
-    parser.add_argument('--test_batch_size', default=4, type=int)
+    parser.add_argument('--test_batch_size', default=16, type=int)
 
     parser.add_argument('--seed', default=42, type=int)
 
