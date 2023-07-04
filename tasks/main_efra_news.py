@@ -6,6 +6,7 @@ from transformers import AutoTokenizer
 # from error_analysis_TRC import load_local_TRC_model
 from TRC.utils import tokenize_with_new_mask, evaluate, load_local_TRC_model
 from common_utils import extract_from_dataframe, mask_batch_seq_generator
+from EFRA.preprocessing import preprocess_efra
 
 # PRENDI NEWS, METTI COLONNA 1, E TESTA CON MODELLO FINETUNED SU TRC 
 
@@ -16,11 +17,13 @@ def main():
 
     # data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news.csv'
     # news = pd.read_csv(data_path, index_col=0)
-    # news['year'] = news.apply(lambda x: x['date'].split('-')[0], axis = 1)
-    # news['month'] = news.apply(lambda x: x['date'].split('-')[1], axis = 1)
-    # news['relevance'] = 1
+    # news = preprocess_efra(news, 'news')
+    # news['sentences'] = news.apply(lambda x: x['description'].split('.'), axis = 1)
 
-    food_0 = pd.read_csv('/home/cc/rora_tesi_new/food_0.csv')
+    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news.p'
+    news = pd.read_pickle(data_path)
+
+    # food_0 = pd.read_csv('/home/cc/rora_tesi_new/food_0.csv')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #device = "cpu"
@@ -33,13 +36,13 @@ def main():
     model = load_local_TRC_model(model_path, config_path, device, model_name)
     model = model.to(device)
 
-    # need_colums = ['description', 'relevance']
-    need_colums = ['Phrase',' Sentence_class']
+    need_colums = ['tokens_clean', 'sentence_class']
+    # need_colums = ['Phrase',' Sentence_class']
 
-    # X_test_raw, Y_test = extract_from_dataframe(news, need_colums)
-    X_test_raw, Y_test = extract_from_dataframe(food_0, need_colums)
-    # test_batch_size = 4
-    test_batch_size = 5
+    X_test_raw, Y_test = extract_from_dataframe(news, need_colums)
+    # X_test_raw, Y_test = extract_from_dataframe(food_0, need_colums)
+    test_batch_size = 16
+    # test_batch_size = 5
 
     class_weight = None
 
