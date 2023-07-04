@@ -14,12 +14,13 @@ MAX_LENGTH = 128
 
 def main():
 
-    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news.csv'
-    news = pd.read_csv(data_path, index_col=0)
-    news['year'] = news.apply(lambda x: x['date'].split('-')[0], axis = 1)
-    news['month'] = news.apply(lambda x: x['date'].split('-')[1], axis = 1)
-    news['relevance'] = 1
+    # data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news.csv'
+    # news = pd.read_csv(data_path, index_col=0)
+    # news['year'] = news.apply(lambda x: x['date'].split('-')[0], axis = 1)
+    # news['month'] = news.apply(lambda x: x['date'].split('-')[1], axis = 1)
+    # news['relevance'] = 1
 
+    food_0 = pd.read_csv('/home/cc/rora_tesi_new/food_0.csv')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #device = "cpu"
@@ -32,10 +33,13 @@ def main():
     model = load_local_TRC_model(model_path, config_path, device, model_name)
     model = model.to(device)
 
-    need_colums = ['description', 'relevance']
-    
-    X_test_raw, Y_test = extract_from_dataframe(news, need_colums)
-    test_batch_size = 4
+    # need_colums = ['description', 'relevance']
+    need_colums = ['Phrase',' Sentence_class']
+
+    # X_test_raw, Y_test = extract_from_dataframe(news, need_colums)
+    X_test_raw, Y_test = extract_from_dataframe(food_0, need_colums)
+    # test_batch_size = 4
+    test_batch_size = 5
 
     class_weight = None
 
