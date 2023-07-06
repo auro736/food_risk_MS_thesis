@@ -4,7 +4,7 @@ def my_parser():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--from_finetuned", default = True, action = 'store_true')
+    parser.add_argument("--from_finetuned", default = False, action = 'store_true')
 
     parser.add_argument("--bert_model", default='xlm-roberta-large-finetuned-conll03-english', type=str)
 
@@ -18,11 +18,11 @@ def my_parser():
 
     parser.add_argument('--rnn_hidden_size', default=384, type=int)
 
-    parser.add_argument('--batch_size', default=16, type=int)
+    parser.add_argument('--batch_size', default=32, type=int)
 
-    parser.add_argument('--eval_batch_size', default=16, type=int)
+    parser.add_argument('--eval_batch_size', default=32, type=int)
 
-    parser.add_argument('--test_batch_size', default=16, type=int)
+    parser.add_argument('--test_batch_size', default=32, type=int)
 
     parser.add_argument('--seed', default=42, type=int)
 

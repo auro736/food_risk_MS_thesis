@@ -264,7 +264,9 @@ def main():
     print(f'Test Acc: {test_acc * 100:.2f}%')
     print(f'Test P: {test_P * 100:.2f}%')
     print(f'Test R: {test_R * 100:.2f}%')
-    print(f'Test F1: {test_F * 100:.2f}%')
+    print(f'Test F1 Strict: {test_F * 100:.2f}%')
+    print('Test F1 Ent Type:' , test_results['ent_type']['f1'] )
+
     token_pred_dir = log_directory + 'token_prediction.npy'
     np.save(token_pred_dir, test_t_pred)
 
