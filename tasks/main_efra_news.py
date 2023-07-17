@@ -6,7 +6,7 @@ from transformers import AutoTokenizer
 # from error_analysis_TRC import load_local_TRC_model
 from TRC.utils import tokenize_with_new_mask, evaluate, load_local_TRC_model
 from common_utils import extract_from_dataframe, mask_batch_seq_generator
-from EFRA.preprocessing import preprocess_efra
+# from EFRA.preprocessing import preprocess_efra
 
 # PRENDI NEWS, METTI COLONNA 1, E TESTA CON MODELLO FINETUNED SU TRC 
 
@@ -14,11 +14,6 @@ SEED = 42
 MAX_LENGTH = 128
 
 def main():
-
-    # data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news.csv'
-    # news = pd.read_csv(data_path, index_col=0)
-    # news = preprocess_efra(news, 'news')
-    # news['sentences'] = news.apply(lambda x: x['description'].split('.'), axis = 1)
 
     data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news.p'
     news = pd.read_pickle(data_path)
@@ -29,8 +24,8 @@ def main():
     #device = "cpu"
     model_name = 'cardiffnlp/twitter-roberta-large-2022-154m'
 
-    model_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/20_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-    config_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/20_epoch/data/True_weight/42_seed/saved-model/config.json'
+    model_path = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+    config_path = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, normalization = True)
     model = load_local_TRC_model(model_path, config_path, device, model_name)
@@ -46,7 +41,7 @@ def main():
 
     class_weight = None
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name, normalization=True)
+    # tokenizer = AutoTokenizer.from_pretrained(model_name, normalization=True)
     X_test, masks_test = tokenize_with_new_mask(X_test_raw, MAX_LENGTH, tokenizer)
 
     num_batches = X_test.shape[0] // test_batch_size
