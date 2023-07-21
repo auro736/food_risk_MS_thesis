@@ -52,15 +52,15 @@ def main():
         os.makedirs(modeldir, exist_ok=True)
         print(f"Create modeldir: {modeldir}")
 
-    incidents_train = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_train.p')
-    incidents_val = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_val.p')
-    incidents_test = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_test.p')
+    incidents_train = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/incidents_train.p')
+    incidents_val = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/incidents_val.p')
+    incidents_test = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/incidents_test.p')
     
     print(len(incidents_train))
 
     # print(train_inc.head())
 
-    need_columns = ['tokens', 'entity_label', 'sentence_class']
+    need_columns = ['tokens_clean', 'entity_label', 'sentence_class']
     # if args.task_type == 'entity_detection':
     #     need_columns.append('entity_label')
     # need_columns.append('sentence_class')
@@ -68,7 +68,7 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #device = "cpu"
-    model_name = 'xlm-roberta-large-finetuned-conll03-english'
+    model_name = args.bert_model
 
 
     X_train_raw, Y_train_raw, seq_train = extract_from_dataframe(incidents_train, need_columns)
@@ -86,8 +86,13 @@ def main():
 
     if args.from_finetuned:
         print('USING FINETUNED MODEL')
-        model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-        config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
+        # model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+        # config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
+        
+        # SE USI HPC
+        model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/deberta-v3-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
+        config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/deberta-v3-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
+        
         model, config = load_local_EMD_model(model_path, config_path, device, model_name)
         model.config.update({'num_labels': len(labels), })
         model.num_labels = config.num_labels
