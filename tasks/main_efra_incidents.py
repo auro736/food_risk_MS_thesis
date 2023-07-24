@@ -90,8 +90,8 @@ def main():
         # config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
         
         # SE USI HPC
-        model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/deberta-v3-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-        config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/deberta-v3-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
+        model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
+        config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/config.json'
         
         model, config = load_local_EMD_model(model_path, config_path, device, model_name)
         model.config.update({'num_labels': len(labels), })
