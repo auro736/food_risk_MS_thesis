@@ -27,7 +27,7 @@ which pip && which python
 
 
 python tasks/main_efra_incidents.py \
-    --bert_model microsoft/deberta-v3-large \
+    --bert_model roberta-large \
     --n_epochs 6 \
     --from_finetuned \
 
