@@ -15,29 +15,26 @@ MAX_LENGTH = 128
 
 def main():
 
-    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news.p'
+    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/mixed_news.p'
     news = pd.read_pickle(data_path)
 
     # food_0 = pd.read_csv('/home/cc/rora_tesi_new/food_0.csv')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #device = "cpu"
-    model_name = 'cardiffnlp/twitter-roberta-large-2022-154m'
+    model_name = 'roberta-large'
 
-    model_path = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-    config_path = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
+    model_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+    config_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, normalization = True)
     model = load_local_TRC_model(model_path, config_path, device, model_name)
     model = model.to(device)
 
     need_colums = ['tokens_clean', 'sentence_class']
-    # need_colums = ['Phrase',' Sentence_class']
 
     X_test_raw, Y_test = extract_from_dataframe(news, need_colums)
-    # X_test_raw, Y_test = extract_from_dataframe(food_0, need_colums)
     test_batch_size = 16
-    # test_batch_size = 5
 
     class_weight = None
 

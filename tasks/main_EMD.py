@@ -54,12 +54,13 @@ def main():
     test_data = pd.read_pickle(os.path.join(args.data, args.test_file))
 
     need_columns = ['tweet_tokens']
-    if args.task_type == 'entity_detection':
-        need_columns.append('entity_label')
-    elif args.task_type == 'relevant_entity_detection':
-        need_columns.append('relevant_entity_label')
-    elif args.task_type == 'entity_relevance_classification':
-        need_columns.append('relevance_entity_class_label')
+    need_columns.append('entity_label')
+    # if args.task_type == 'entity_detection':
+    #     need_columns.append('entity_label')
+    # elif args.task_type == 'relevant_entity_detection':
+    #     need_columns.append('relevant_entity_label')
+    # elif args.task_type == 'entity_relevance_classification':
+    #     need_columns.append('relevance_entity_class_label')
     need_columns.append('sentence_class')
 
     X_train_raw, Y_train_raw, seq_train = extract_from_dataframe(train_data, need_columns)

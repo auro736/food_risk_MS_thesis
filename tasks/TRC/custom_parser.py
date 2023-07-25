@@ -6,7 +6,7 @@ def my_parser():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--bert_model", default='cardiffnlp/twitter-roberta-large-2022-154m', type=str)
+    parser.add_argument("--bert_model", default='roberta-large', type=str)
 
     parser.add_argument("--model_type", default='bertweet-seq', type=str)
 
