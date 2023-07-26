@@ -99,12 +99,17 @@ def compute_crf_metrics(predictions, label_ids, label_map):
 def mask_batch_generator(X, y, masks, batch_size):
     """Primitive batch generator
     """
+
+    # lunghezza split
     size = X.shape[0]
+    # da zero a lunghezza -1
     indices = np.arange(size)
+    # shuffle indici per shuffle ds 
     np.random.shuffle(indices)
-
+    
+    # permuto X,y,masks con l'ordine degli indici
     X_copy = X.copy()
-
+    
     X_copy = X_copy[indices]
 
     y_copy = y.copy()

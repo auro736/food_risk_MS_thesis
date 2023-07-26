@@ -61,6 +61,9 @@ def main():
     print(args)
 
     tokenizer = AutoTokenizer.from_pretrained(args.bert_model, normalization=True)
+    # ritornano lista di liste di embedding dei token paddati (tutte con stessa dimensione) 
+    # e attention masks, ho 1 dove embedding > 0
+    # X e maschere lunghe = alle istanze nel dataset
     X_train, masks_train = tokenize_with_new_mask(X_train_raw, args.max_length, tokenizer)
     X_dev, masks_dev = tokenize_with_new_mask(X_dev_raw, args.max_length, tokenizer)
     X_test, masks_test = tokenize_with_new_mask(X_test_raw, args.max_length, tokenizer)

@@ -155,11 +155,9 @@ def simple_tokenize(orig_tokens, tokenizer):
     """
     tokenize a array of raw text
     """
-    # bert_tokens = ["[CLS]"]
     bert_tokens = [tokenizer.cls_token]
     for x in orig_tokens:
         bert_tokens.extend(tokenizer.tokenize(x))
-    # bert_tokens.append("[SEP]")
     bert_tokens.append(tokenizer.sep_token)
     return bert_tokens
 
@@ -169,14 +167,22 @@ def tokenize_with_new_mask(orig_text, max_length, tokenizer):
     tokenize a array of raw text and generate corresponding
     attention labels array and attention masks array
     """
+    # tokenizza semplice
     bert_tokens = [simple_tokenize(t, tokenizer) for t in orig_text]
+    
+    # embedding
     input_ids = [tokenizer.convert_tokens_to_ids(x) for x in bert_tokens]
+    
+    # padding delle sequenze in modo da averle tutte della stessa lunghezza
     input_ids = pad_sequences(input_ids, maxlen=max_length, dtype="long", truncating="post", padding="post")
+   
+    # creo attention masks, metto 1 dove embeddings in input_ids > 0
     attention_masks = []
     for seq in input_ids:
         seq_mask = [float(i > 0) for i in seq]
         attention_masks.append(seq_mask)
     attention_masks = np.array(attention_masks)
+    
     return input_ids, attention_masks
 
 
@@ -206,7 +212,7 @@ def train(model, optimizer, train_batch_generator, num_batches, device, class_we
         class_weight = class_weight.to(device) if class_weight is not None else None
         optimizer.zero_grad()
         outputs = model(x_batch, masks_batch, labels=y_batch, class_weight=class_weight)
-
+        
         loss, logits = outputs[:2]
 
         loss.backward()
