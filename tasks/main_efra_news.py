@@ -3,10 +3,8 @@ import pandas as pd
 import torch
 from transformers import AutoTokenizer
 
-# from error_analysis_TRC import load_local_TRC_model
 from TRC.utils import tokenize_with_new_mask, evaluate, load_local_TRC_model
 from common_utils import extract_from_dataframe, mask_batch_seq_generator
-# from EFRA.preprocessing import preprocess_efra
 
 # PRENDI NEWS, METTI COLONNA 1, E TESTA CON MODELLO FINETUNED SU TRC 
 
@@ -17,8 +15,6 @@ def main():
 
     data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news.p'
     news = pd.read_pickle(data_path)
-
-    # food_0 = pd.read_csv('/home/cc/rora_tesi_new/food_0.csv')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #device = "cpu"
@@ -32,16 +28,12 @@ def main():
     model = model.to(device)
 
     need_colums = ['tokens_clean', 'sentence_class']
-    # need_colums = ['Phrase',' Sentence_class']
 
     X_test_raw, Y_test = extract_from_dataframe(news, need_colums)
-    # X_test_raw, Y_test = extract_from_dataframe(food_0, need_colums)
     test_batch_size = 16
-    # test_batch_size = 5
 
     class_weight = None
 
-    # tokenizer = AutoTokenizer.from_pretrained(model_name, normalization=True)
     X_test, masks_test = tokenize_with_new_mask(X_test_raw, MAX_LENGTH, tokenizer)
 
     num_batches = X_test.shape[0] // test_batch_size

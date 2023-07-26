@@ -1,7 +1,6 @@
 import os
 import json
 import shutil
-import logging
 import random
 import datetime
 import numpy as np

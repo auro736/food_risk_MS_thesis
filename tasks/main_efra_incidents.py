@@ -58,13 +58,7 @@ def main():
     
     print(len(incidents_train))
 
-    # print(train_inc.head())
-
     need_columns = ['tokens_clean', 'entity_label', 'sentence_class']
-    # if args.task_type == 'entity_detection':
-    #     need_columns.append('entity_label')
-    # need_columns.append('sentence_class')
-
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #device = "cpu"
@@ -74,8 +68,6 @@ def main():
     X_train_raw, Y_train_raw, seq_train = extract_from_dataframe(incidents_train, need_columns)
     X_dev_raw, Y_dev_raw, seq_dev = extract_from_dataframe(incidents_val, need_columns)
     X_test_raw, Y_test_raw, seq_test = extract_from_dataframe(incidents_test, need_columns)
-    # args.eval_batch_size = seq_dev.shape[0]
-    # args.test_batch_size = seq_test.shape[0]
 
     with open(os.path.join(args.data, args.label_map), 'r') as fp:
         label_map = json.load(fp)
@@ -116,6 +108,7 @@ def main():
     X_dev, masks_dev, Y_dev = tokenize_with_new_mask(X_dev_raw, args.max_length, tokenizer, Y_dev_raw, label_map)
     X_test, masks_test, Y_test = tokenize_with_new_mask(X_test_raw, 128, tokenizer, Y_test_raw, label_map)
 
+    
     # weight of each class in loss function
     class_weight = None
     if args.assign_weight: # default True
