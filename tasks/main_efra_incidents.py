@@ -52,9 +52,9 @@ def main():
         os.makedirs(modeldir, exist_ok=True)
         print(f"Create modeldir: {modeldir}")
 
-    incidents_train = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/incidents_train.p')
-    incidents_val = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/incidents_val.p')
-    incidents_test = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/incidents_test.p')
+    incidents_train = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_train.p')
+    incidents_val = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_val.p')
+    incidents_test = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_test.p')
     
     print(len(incidents_train))
 
@@ -78,12 +78,12 @@ def main():
 
     if args.from_finetuned:
         print('USING FINETUNED MODEL')
-        # model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-        # config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
+        model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+        config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
         
         # SE USI HPC
-        model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-        config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/config.json'
+        # model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
+        # config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/config.json'
         
         model, config = load_local_EMD_model(model_path, config_path, device, model_name)
         model.config.update({'num_labels': len(labels), })
@@ -108,7 +108,6 @@ def main():
     X_dev, masks_dev, Y_dev = tokenize_with_new_mask(X_dev_raw, args.max_length, tokenizer, Y_dev_raw, label_map)
     X_test, masks_test, Y_test = tokenize_with_new_mask(X_test_raw, 128, tokenizer, Y_test_raw, label_map)
 
-    
     # weight of each class in loss function
     class_weight = None
     if args.assign_weight: # default True
