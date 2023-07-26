@@ -1,3 +1,4 @@
+import pickle
 import numpy as np
 import pandas as pd
 
@@ -33,7 +34,7 @@ def split_df(data):
 
 def main():
 
-    data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/mixed_news.p'
+    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/mixed_news.p'
     news = pd.read_pickle(data_path)
     train_news, val_news, test_news = split_df(news)
 
@@ -41,8 +42,8 @@ def main():
     #device = "cpu"
     model_name = 'roberta-large'
 
-    model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/roberta-large/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-    config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/roberta-large/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/config.json'
+    model_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+    config_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, normalization = True)
     model = load_local_TRC_model(model_path, config_path, device, model_name)
