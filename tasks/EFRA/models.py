@@ -53,7 +53,22 @@ class ModelForWeightedSequenceClassification(PreTrainedModel):
             output_hidden_states=output_hidden_states,
             return_dict=return_dict,
         )
+
+        # print(outputs.last_hidden_state)
+
+        #IDEA
+        '''
+            LA FORWARD VIENE CHIAMATA SUI BATCH, FAR0' IN MODO CHE OGNI BATCH CONTIENE TUTTE LE FRASI DI UN DOC
+            DA OUTPUTS PRENDI LAST_HIDDEN_STATE FAI LA MEDIA 
+                sentence_embeddings = model_output.last_hidden_state
+                document_embedding = torch.mean(sentence_embeddings, dim=1)  # Aggregazione tramite media
+            COSì OTTIENI EMBEDDING DEL DOC
+            E POI I LOGITS LI CALCOLO SU QUESTO EMBEDDING APPENA OTTENUTO
+        '''
         
+        
+
+
         sequence_output = outputs[0]
         # da shape [32, 128, 2] a shape [32, 2] lo fa implementazione ufficiale 
         sequence_output = sequence_output[:, 0, :]

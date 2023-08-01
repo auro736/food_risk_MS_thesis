@@ -10,7 +10,7 @@ def my_parser():
 
     parser.add_argument("--model_type", default='bertweet-seq', type=str)
 
-    parser.add_argument('--n_epochs', default=24, type=int)
+    parser.add_argument('--n_epochs', default=1, type=int)
 
     parser.add_argument('--max_length', default=128, type=int)
 
@@ -27,11 +27,11 @@ def my_parser():
 
     parser.add_argument('--learning_rate', default=1e-6, type=float)
 
-    parser.add_argument('--data', default='/home/cc/rora_tesi_new/data/Tweet-Fid', type=str)
+    parser.add_argument('--data', default='/home/agensale/rora_tesi_new/data/Tweet-Fid', type=str)
 
     parser.add_argument('--log_dir', default='log/log_TRC', type=str)
 
-    parser.add_argument("--save_model", default=True, action='store_true')
+    parser.add_argument("--save_model", default=False, action='store_true')
 
     parser.add_argument("--early_stop", default=False, action='store_true')
 
