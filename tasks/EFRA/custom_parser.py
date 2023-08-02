@@ -6,7 +6,7 @@ def my_parser():
 
     parser.add_argument("--from_finetuned", default = False, action = 'store_true')
 
-    parser.add_argument("--bert_model", default='roberta-large', type=str)
+    parser.add_argument("--bert_model", default='xlm-roberta-large-finetuned-conll03-english', type=str)
 
     parser.add_argument("--model_type", default='bertweet-token-crf', type=str)
     
@@ -14,7 +14,7 @@ def my_parser():
 
     parser.add_argument('--n_epochs', default=1, type=int)
 
-    parser.add_argument('--max_length', default=128, type=int)
+    parser.add_argument('--max_length', default=512, type=int)
 
     parser.add_argument('--rnn_hidden_size', default=384, type=int)
 

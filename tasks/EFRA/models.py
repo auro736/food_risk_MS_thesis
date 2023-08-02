@@ -59,9 +59,8 @@ class ModelForWeightedSequenceClassification(PreTrainedModel):
         #IDEA
         '''
             LA FORWARD VIENE CHIAMATA SUI BATCH, FAR0' IN MODO CHE OGNI BATCH CONTIENE TUTTE LE FRASI DI UN DOC
-            DA OUTPUTS PRENDI LAST_HIDDEN_STATE FAI LA MEDIA 
-                sentence_embeddings = model_output.last_hidden_state
-                document_embedding = torch.mean(sentence_embeddings, dim=1)  # Aggregazione tramite media
+            EMBEDDING DEL PARAGRAFO LA CREO FACENDO:
+                - LA MEDIA DI TUTTI I TOKEN DI QUEL PARAGRAFO
             COSì OTTIENI EMBEDDING DEL DOC
             E POI I LOGITS LI CALCOLO SU QUESTO EMBEDDING APPENA OTTENUTO
         '''
