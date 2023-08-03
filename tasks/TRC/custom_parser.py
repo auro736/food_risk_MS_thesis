@@ -27,7 +27,7 @@ def my_parser():
 
     parser.add_argument('--learning_rate', default=1e-6, type=float)
 
-    parser.add_argument('--data', default='/home/agensale/rora_tesi_new/data/Tweet-Fid', type=str)
+    parser.add_argument('--data', default='/home/cc/rora_tesi_new/data/Tweet-Fid', type=str)
 
     parser.add_argument('--log_dir', default='log/log_TRC', type=str)
 

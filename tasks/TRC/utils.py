@@ -175,7 +175,7 @@ def tokenize_with_new_mask(orig_text, max_length, tokenizer):
     
     # padding delle sequenze in modo da averle tutte della stessa lunghezza
     input_ids = pad_sequences(input_ids, maxlen=max_length, dtype="long", truncating="post", padding="post")
-   
+
     # creo attention masks, metto 1 dove embeddings in input_ids > 0
     attention_masks = []
     for seq in input_ids:

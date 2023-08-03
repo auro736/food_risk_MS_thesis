@@ -6,10 +6,11 @@ import torch
 
 from transformers import AutoTokenizer, AutoConfig, AdamW
 
-# from TRC.custom_parser import my_parser
-from TRC.utils import tokenize_with_new_mask, train, evaluate, load_local_TRC_model
+from TRC.utils import train, evaluate, load_local_TRC_model
 
 from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
+
+from EFRA.utils import tokenize_with_new_mask_efra
 
 def split_df(data):
     random_indices = np.random.permutation(data.index)
@@ -34,7 +35,10 @@ def split_df(data):
 
 def main():
 
-    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/mixed_news.p'
+    # data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/mixed_news.p'
+    
+    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news_updated.p'
+    
     news = pd.read_pickle(data_path)
     train_news, val_news, test_news = split_df(news)
 
@@ -49,20 +53,26 @@ def main():
     model = load_local_TRC_model(model_path, config_path, device, model_name)
     model = model.to(device)
 
-    need_columns = ['tokens_clean', 'sentence_class']
+    # need_columns = ['tokens_clean', 'sentence_class']
+  
+    need_columns = ['words', 'sentence_class']
 
     X_train_raw, Y_train = extract_from_dataframe(train_news, need_columns)
     X_dev_raw, Y_dev = extract_from_dataframe(val_news, need_columns)
     X_test_raw, Y_test = extract_from_dataframe(test_news, need_columns)
+    
+    # X_train_raw, Y_train = X_train_raw[:5], Y_train[:5]
+    # X_dev_raw, Y_dev = X_dev_raw[:5], Y_dev[:5]
+    # X_test_raw, Y_test = X_test_raw[:5], Y_test[:5]
     
     eval_batch_size = 32
     test_batch_size = 32
 
     max_length = 128
 
-    X_train, masks_train = tokenize_with_new_mask(X_train_raw, max_length, tokenizer)
-    X_dev, masks_dev = tokenize_with_new_mask(X_dev_raw, max_length, tokenizer)
-    X_test, masks_test = tokenize_with_new_mask(X_test_raw, max_length, tokenizer)
+    X_train, masks_train = tokenize_with_new_mask_efra(X_train_raw, max_length, tokenizer)
+    X_dev, masks_dev = tokenize_with_new_mask_efra(X_dev_raw, max_length, tokenizer)
+    X_test, masks_test = tokenize_with_new_mask_efra(X_test_raw, max_length, tokenizer)
 
     # weight of each class in loss function
     assign_weight = True
