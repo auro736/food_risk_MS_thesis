@@ -26,4 +26,7 @@ source ~/miniconda3/bin/activate rora_venv
 which pip && which python
 
 
-python tasks/prova_news.py 
+python tasks/main_efra_news.py \
+    --bert_model roberta-large \
+    --n_epochs 6 \
+    --from_finetuned \

@@ -30,11 +30,11 @@ def main():
 
     args = my_parser()
     if args.from_finetuned:
-        log_directory = args.log_dir +'/' + str(args.bert_model).split('/')[-1] + '/from_finetuned' + '/' + args.model_type + '/' \
+        log_directory = args.log_dir +'/' + str(args.bert_model).split('/')[-1] + 'incidents/from_finetuned' + '/' + args.model_type + '/' \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
                     str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
     else:
-        log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] + '/no_finetuned' + '/' + args.model_type + '/' \
+        log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] + 'incidents/no_finetuned' + '/' + args.model_type + '/' \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
                     str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
         
@@ -62,8 +62,8 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #device = "cpu"
-    model_name = args.bert_model
 
+    model_name = args.bert_model
 
     X_train_raw, Y_train_raw, seq_train = extract_from_dataframe(incidents_train, need_columns)
     X_dev_raw, Y_dev_raw, seq_dev = extract_from_dataframe(incidents_val, need_columns)
@@ -78,6 +78,7 @@ def main():
 
     if args.from_finetuned:
         print('USING FINETUNED MODEL')
+
         model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
         config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
         
@@ -284,7 +285,9 @@ def main():
     for key, value in performance_dict.items():
         if type(value) is np.int64:
             performance_dict[key] = int(value)
-    with open(args.performance_file, 'a+') as outfile:
+    
+    performance_file = 'performance_EFRA_incidents.txt'
+    with open(performance_file, 'a+') as outfile:
         outfile.write(json.dumps(performance_dict) + '\n')
     if not args.save_model:
         shutil.rmtree(modeldir)
