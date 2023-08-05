@@ -19,7 +19,7 @@ def tokenize_with_new_mask_efra(orig_text, max_length, tokenizer):
     # tokenizza semplice
     # lunga quanto # di righe di input di dataset
 
-    print('A', len(orig_text))
+    # print('A', len(orig_text))
   
     bert_tokens = []
     for t in orig_text:
@@ -30,7 +30,7 @@ def tokenize_with_new_mask_efra(orig_text, max_length, tokenizer):
                 tmp.append(simple_tokenize(s, tokenizer))
         bert_tokens.append(tmp)
 
-    print(len(bert_tokens))
+    # print(len(bert_tokens))
 
  
     # bert_tokens = [simple_tokenize(t, tokenizer) for t in orig_text]
@@ -46,7 +46,7 @@ def tokenize_with_new_mask_efra(orig_text, max_length, tokenizer):
             tmp.append(tokenizer.convert_tokens_to_ids(s))
         input_ids.append(tmp)
     
-    print('IDS',len(input_ids))
+    # print('IDS',len(input_ids))
     # for i in range(len(input_ids)):
     #     print(input_ids[i])
 
