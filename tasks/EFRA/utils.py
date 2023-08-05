@@ -66,7 +66,7 @@ def tokenize_with_new_mask_efra(orig_text, max_length, tokenizer):
     # input_ids = pad_sequences(input_ids, maxlen=max_length, dtype="long", truncating="post", padding="post")
     
     input_ids = pad_sequences(text_encoded,maxlen=max_length,dtype="long", truncating="post", padding="post")
-    print(len(input_ids))
+    # print(len(input_ids))
     # print(input_ids[0].shape)
     # print(input_ids)
 

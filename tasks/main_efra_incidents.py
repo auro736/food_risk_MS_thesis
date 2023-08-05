@@ -30,11 +30,11 @@ def main():
 
     args = my_parser()
     if args.from_finetuned:
-        log_directory = args.log_dir +'/' + str(args.bert_model).split('/')[-1] + 'incidents/from_finetuned' + '/' + args.model_type + '/' \
+        log_directory = args.log_dir +'/' + str(args.bert_model).split('/')[-1] + '/incidents/from_finetuned' + '/' + args.model_type + '/' \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
                     str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
     else:
-        log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] + 'incidents/no_finetuned' + '/' + args.model_type + '/' \
+        log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] + '/incidents/no_finetuned' + '/' + args.model_type + '/' \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
                     str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
         
@@ -286,7 +286,7 @@ def main():
         if type(value) is np.int64:
             performance_dict[key] = int(value)
     
-    performance_file = 'performance_EFRA_incidents.txt'
+    performance_file = 'performnace/performance_EFRA_incidents.txt'
     with open(performance_file, 'a+') as outfile:
         outfile.write(json.dumps(performance_dict) + '\n')
     if not args.save_model:

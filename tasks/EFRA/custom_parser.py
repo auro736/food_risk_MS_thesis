@@ -4,7 +4,7 @@ def my_parser():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--from_finetuned", default = False, action = 'store_true')
+    parser.add_argument("--from_finetuned", default = True , action = 'store_true')
 
     parser.add_argument("--bert_model", default='roberta-large', type=str)
 
@@ -12,7 +12,7 @@ def my_parser():
     
     parser.add_argument("--task_type", default='entity_detection', type=str)
 
-    parser.add_argument('--n_epochs', default=3, type=int)
+    parser.add_argument('--n_epochs', default=1, type=int)
 
     parser.add_argument('--max_length', default=128, type=int)
 
@@ -46,7 +46,7 @@ def my_parser():
 
     parser.add_argument("--label_map", default='label_map_efra.json', type=str)
 
-    parser.add_argument("--performance_file", default='performance/performance_EFRA.txt', type=str)
+    # parser.add_argument("--performance_file", default='performance/performance_EFRA.txt', type=str)
 
     parser.add_argument("--embeddings_file", default='glove.840B.300d.txt', type=str)
 
