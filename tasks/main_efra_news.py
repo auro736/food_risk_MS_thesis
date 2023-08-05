@@ -8,9 +8,8 @@ import matplotlib.pyplot as plt
 
 import torch
 
-from transformers import AutoTokenizer, AutoConfig #, AdamW
+from transformers import AutoTokenizer, AutoConfig, AdamW
 
-from torch.optim import AdamW
 from TRC.utils import train, evaluate, load_local_TRC_model
 
 from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
@@ -67,7 +66,7 @@ def main():
         print(f"Create modeldir: {modeldir}")    
 
 
-    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news_updated.p'
+    data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/news_updated.p'
     
     news = pd.read_pickle(data_path)
     train_news, val_news, test_news = split_df(news)
@@ -98,12 +97,12 @@ def main():
     if args.from_finetuned:
         print('USING FINETUNED MODEL')
 
-        model_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-        config_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
+        # model_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+        # config_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
         
         # SE USI HPC
-        # model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/' + model_name + '/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-        # config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/' + model_name + '/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/config.json'
+        model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/' + model_name + '/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
+        config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/' + model_name + '/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/config.json'
         
         model = load_local_TRC_model(model_path, config_path, device, model_name)
         
