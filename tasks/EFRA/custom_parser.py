@@ -4,7 +4,7 @@ def my_parser():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--from_finetuned", default = True, action = 'store_true')
+    parser.add_argument("--from_finetuned", default = False, action = 'store_true')
 
     parser.add_argument("--bert_model", default='roberta-large', type=str)
 

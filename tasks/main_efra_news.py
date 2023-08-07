@@ -18,6 +18,8 @@ from TRC.utils import load_local_TRC_model, load_model
 from EFRA.utils import tokenize_with_new_mask_efra
 from EFRA.custom_parser import my_parser
 
+np.random.seed(42)
+
 def split_df(data):
     random_indices = np.random.permutation(data.index)
 
@@ -40,6 +42,7 @@ def split_df(data):
     return train_set, val_set, test_set
 
 def main():
+
     args = my_parser()
 
     if args.from_finetuned:
@@ -66,7 +69,7 @@ def main():
         print(f"Create modeldir: {modeldir}")    
 
 
-    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news_updated.p'
+    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news_words.p'
     
     news = pd.read_pickle(data_path)
     train_news, val_news, test_news = split_df(news)
