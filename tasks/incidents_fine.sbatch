@@ -30,4 +30,6 @@ python tasks/main_efra_incidents.py \
     --bert_model roberta-large \
     --n_epochs 6 \
     --from_finetuned \
+    --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
+    --model_type bertweet-token-crf \
 

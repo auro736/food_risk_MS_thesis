@@ -1,12 +1,12 @@
 #!/bin/sh
-#SBATCH --job-name=train_news
-#SBATCH --output=/home/agensale/output_efra/train_news.out
+#SBATCH --job-name=news_finetuned
+#SBATCH --output=/home/agensale/output_efra/news_finetuned.out
 #SBATCH --nodes=1            
 #SBATCH --ntasks=1     
 #SBATCH --partition=cuda        
 #SBATCH --cpus-per-task=1       
 #SBATCH --gres=gpu:1   
-#SBATCH --time=00:40:00          
+#SBATCH --time=00:30:00          
 #SBATCH --mail-type=ALL        
 #SBATCH --mem=10GB
 
@@ -30,3 +30,5 @@ python tasks/main_efra_news.py \
     --bert_model roberta-large \
     --n_epochs 6 \
     --from_finetuned \
+    --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
+    --model_type bertweet-seq \

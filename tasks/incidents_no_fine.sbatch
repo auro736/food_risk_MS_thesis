@@ -28,4 +28,6 @@ which pip && which python
 
 python tasks/main_efra_incidents.py \
     --n_epochs 6 \
-    --bert_model roberta-large
+    --bert_model roberta-large \
+    --model_type bertweet-token-crf \
+    --data /home/agensale/rora_tesi_new/data/SampleAgroknow \

@@ -4,11 +4,11 @@ def my_parser():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--from_finetuned", default = False, action = 'store_true')
+    parser.add_argument("--from_finetuned", default = True, action = 'store_true')
 
     parser.add_argument("--bert_model", default='roberta-large', type=str)
 
-    parser.add_argument("--model_type", default='bertweet-token-crf', type=str)
+    parser.add_argument("--model_type", default='bertweet-seq', type=str)
     
     parser.add_argument("--task_type", default='entity_detection', type=str)
 
@@ -28,7 +28,7 @@ def my_parser():
 
     parser.add_argument('--learning_rate', default=1e-6, type=float)
 
-    # parser.add_argument('--data', default='/home/cc/rora_tesi_new/data/SampleAgroknow', type=str)
+    parser.add_argument('--data', default='/home/cc/rora_tesi_new/data/SampleAgroknow', type=str)
 
     parser.add_argument('--log_dir', default='log/log_EFRA', type=str)
 
