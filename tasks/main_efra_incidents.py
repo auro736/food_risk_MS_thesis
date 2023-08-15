@@ -53,21 +53,21 @@ def main():
         os.makedirs(modeldir, exist_ok=True)
         print(f"Create modeldir: {modeldir}")
 
-    incidents_train_raw = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/train_inc.p')
-    incidents_val_raw = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/val_inc.p')
-    incidents_test_raw = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/test_inc.p')
+    incidents_train = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/train_inc.p')
+    incidents_val = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/val_inc.p')
+    incidents_test = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/test_inc.p')
     
-    print(len(incidents_train_raw))
-    print(len(incidents_val_raw))
-    print(len(incidents_test_raw))
+    # print(len(incidents_train_raw))
+    # print(len(incidents_val_raw))
+    # print(len(incidents_test_raw))
 
-    incidents_train = incidents_train_raw.sample(n = 2000, random_state = 42)
-    incidents_val = incidents_val_raw.sample(n = 1000, random_state = 42)
-    incidents_test = incidents_test_raw.sample(n = 1000, random_state = 42)
+    # incidents_train = incidents_train_raw.sample(n = 2000, random_state = 42)
+    # incidents_val = incidents_val_raw.sample(n = 1000, random_state = 42)
+    # incidents_test = incidents_test_raw.sample(n = 1000, random_state = 42)
 
-    print(len(incidents_train))
-    print(len(incidents_val))
-    print(len(incidents_test))
+    # print(len(incidents_train))
+    # print(len(incidents_val))
+    # print(len(incidents_test))
 
 
     # need_columns = ['tokens_clean', 'entity_label', 'sentence_class']
@@ -119,9 +119,9 @@ def main():
 
     model = model.to(device)
 
-    # X_train_raw, Y_train_raw = X_train_raw[:5], Y_train_raw[:5]
-    # X_dev_raw, Y_dev_raw = X_dev_raw[:5], Y_dev_raw[:5]
-    # X_test_raw, Y_test_raw = X_test_raw[:5], Y_test_raw[:5]
+    X_train_raw, Y_train_raw = X_train_raw[:2400], Y_train_raw[:2400]
+    X_dev_raw, Y_dev_raw = X_dev_raw[:300], Y_dev_raw[:300]
+    X_test_raw, Y_test_raw = X_test_raw[:300], Y_test_raw[:300]
 
     X_train, masks_train, Y_train = tokenize_with_new_mask_inc(X_train_raw, args.max_length, tokenizer, Y_train_raw, label_map)
     X_dev, masks_dev, Y_dev = tokenize_with_new_mask_inc(X_dev_raw, args.max_length, tokenizer, Y_dev_raw, label_map)
@@ -307,7 +307,7 @@ def main():
         if type(value) is np.int64:
             performance_dict[key] = int(value)
     
-    performance_file = 'performnace/performance_EFRA_incidents.txt'
+    performance_file = 'performance/performance_EFRA_incidents.txt'
     with open(performance_file, 'a+') as outfile:
         outfile.write(json.dumps(performance_dict) + '\n')
     if not args.save_model:

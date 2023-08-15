@@ -12,7 +12,7 @@ def my_parser():
     
     parser.add_argument("--task_type", default='entity_detection', type=str)
 
-    parser.add_argument('--n_epochs', default=6, type=int)
+    parser.add_argument('--n_epochs', default=10, type=int)
 
     parser.add_argument('--max_length', default=128, type=int)
 
