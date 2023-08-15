@@ -83,10 +83,18 @@ def main():
     # in masks_train[i] ho 1 dove in X_train[i] ho un umbedding con valore > 0
     # Y_train[i] = label numeriche per ogni token in X_train[i]
 
+    X_train_raw, Y_train_raw = X_train_raw[:5], Y_train_raw[:5]
+    X_dev_raw, Y_dev_raw = X_dev_raw[:5], Y_dev_raw[:5]
+    X_test_raw, Y_test_raw = X_test_raw[:5], Y_test_raw[:5]
+
     X_train, masks_train, Y_train = tokenize_with_new_mask(X_train_raw, args.max_length, tokenizer, Y_train_raw, label_map)
     X_dev, masks_dev, Y_dev = tokenize_with_new_mask(X_dev_raw, args.max_length, tokenizer, Y_dev_raw, label_map)
     X_test, masks_test, Y_test = tokenize_with_new_mask(X_test_raw, 128, tokenizer, Y_test_raw, label_map)
     
+    
+
+    print('RAW', len(X_train_raw))
+    print('LEN',len(X_train))
     # weight of each class in loss function
     class_weight = None
     if args.assign_weight: # default True

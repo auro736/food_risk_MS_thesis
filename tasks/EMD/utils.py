@@ -72,10 +72,14 @@ def tokenize_with_new_mask(orig_text, max_length, tokenizer, orig_labels, label_
     attention labels array and attention masks array
     """
     pad_token_label_id = -100
+    print(orig_text[1])
+    print(orig_labels[1])
     simple_tokenize_results = [list(tt) for tt in zip(
         *[simple_tokenize(orig_text[i], tokenizer, orig_labels[i], label_map, max_length) for i in
           range(len(orig_text))])]
     bert_tokens, label_ids = simple_tokenize_results[0], simple_tokenize_results[1]
+    # print('BERT\n', bert_tokens)
+    # print('LABELS\n', label_ids)
     input_ids = [tokenizer.convert_tokens_to_ids(x) for x in bert_tokens]
     input_ids = pad_sequences(input_ids, maxlen=max_length, dtype="long", truncating="post", padding="post")
     label_ids = pad_sequences(label_ids, maxlen=max_length, dtype="long", truncating="post", padding="post",

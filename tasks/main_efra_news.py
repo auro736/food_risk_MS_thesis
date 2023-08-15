@@ -1,5 +1,6 @@
 import os
 import json
+import random
 import shutil
 import datetime
 import numpy as np
@@ -15,10 +16,14 @@ from TRC.utils import train, evaluate, load_local_TRC_model
 from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
 
 from TRC.utils import load_local_TRC_model, load_model
-from EFRA.utils import tokenize_with_new_mask_efra
+from EFRA.utils import tokenize_with_new_mask_news
 from EFRA.custom_parser import my_parser
 
-np.random.seed(42)
+SEED = 42
+
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
 
 def split_df(data):
     random_indices = np.random.permutation(data.index)
@@ -69,14 +74,22 @@ def main():
         print(f"Create modeldir: {modeldir}")    
 
 
-    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news_words.p'
+    # data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news_updated.p'
     
-    news = pd.read_pickle(data_path)
-    train_news, val_news, test_news = split_df(news)
+    # news = pd.read_pickle(data_path)
+    # train_news, val_news, test_news = split_df(news)
+
+    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/News/'
+
+    train_news = pd.read_pickle(data_path + 'train_news.p')
+    val_news = pd.read_pickle(data_path + 'val_news.p')
+    test_news = pd.read_pickle(data_path + 'test_news.p')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model_name = args.bert_model
+
+    print(args.max_length)
 
     #device = "cpu"
   
@@ -106,14 +119,14 @@ def main():
 
 
     model = model.to(device)
-    # X_train_raw, Y_train = X_train_raw[:5], Y_train[:5]
-    # X_dev_raw, Y_dev = X_dev_raw[:5], Y_dev[:5]
-    # X_test_raw, Y_test = X_test_raw[:5], Y_test[:5]
+    X_train_raw, Y_train = X_train_raw[:5], Y_train[:5]
+    X_dev_raw, Y_dev = X_dev_raw[:5], Y_dev[:5]
+    X_test_raw, Y_test = X_test_raw[:5], Y_test[:5]
     
 
-    X_train, masks_train = tokenize_with_new_mask_efra(X_train_raw, args.max_length, tokenizer)
-    X_dev, masks_dev = tokenize_with_new_mask_efra(X_dev_raw, args.max_length, tokenizer)
-    X_test, masks_test = tokenize_with_new_mask_efra(X_test_raw, args.max_length, tokenizer)
+    X_train, masks_train = tokenize_with_new_mask_news(X_train_raw, args.max_length, tokenizer)
+    X_dev, masks_dev = tokenize_with_new_mask_news(X_dev_raw, args.max_length, tokenizer)
+    X_test, masks_test = tokenize_with_new_mask_news(X_test_raw, args.max_length, tokenizer)
 
     # weight of each class in loss function
     assign_weight = True

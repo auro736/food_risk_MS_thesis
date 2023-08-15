@@ -1,7 +1,7 @@
 import os
 import json
-import shutil
 import random
+import shutil
 import datetime
 import numpy as np
 import pandas as pd
@@ -10,9 +10,10 @@ import torch
 from transformers import AutoTokenizer, AutoConfig, AdamW
 
 from EMD.models import *
-from EMD.utils import tokenize_with_new_mask, train, evaluate, predict, load_model, load_local_EMD_model
+from EMD.utils import train, evaluate, predict, load_model, load_local_EMD_model
 
 from EFRA.custom_parser import my_parser
+from EFRA.utils import tokenize_with_new_mask_inc
 
 from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
 
@@ -52,22 +53,35 @@ def main():
         os.makedirs(modeldir, exist_ok=True)
         print(f"Create modeldir: {modeldir}")
 
-    incidents_train = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_train.p')
-    incidents_val = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_val.p')
-    incidents_test = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/incidents_test.p')
+    incidents_train_raw = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/train_inc.p')
+    incidents_val_raw = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/val_inc.p')
+    incidents_test_raw = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/test_inc.p')
     
-    print(len(incidents_train))
+    print(len(incidents_train_raw))
+    print(len(incidents_val_raw))
+    print(len(incidents_test_raw))
 
-    need_columns = ['tokens_clean', 'entity_label', 'sentence_class']
+    incidents_train = incidents_train_raw.sample(n = 2000, random_state = 42)
+    incidents_val = incidents_val_raw.sample(n = 1000, random_state = 42)
+    incidents_test = incidents_test_raw.sample(n = 1000, random_state = 42)
+
+    print(len(incidents_train))
+    print(len(incidents_val))
+    print(len(incidents_test))
+
+
+    # need_columns = ['tokens_clean', 'entity_label', 'sentence_class']
+
+    need_columns = ['words', 'entity_label']
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #device = "cpu"
 
     model_name = args.bert_model
 
-    X_train_raw, Y_train_raw, seq_train = extract_from_dataframe(incidents_train, need_columns)
-    X_dev_raw, Y_dev_raw, seq_dev = extract_from_dataframe(incidents_val, need_columns)
-    X_test_raw, Y_test_raw, seq_test = extract_from_dataframe(incidents_test, need_columns)
+    X_train_raw, Y_train_raw = extract_from_dataframe(incidents_train, need_columns)
+    X_dev_raw, Y_dev_raw = extract_from_dataframe(incidents_val, need_columns)
+    X_test_raw, Y_test_raw = extract_from_dataframe(incidents_test, need_columns)
 
     with open(os.path.join(args.data, args.label_map), 'r') as fp:
         label_map = json.load(fp)
@@ -105,9 +119,16 @@ def main():
 
     model = model.to(device)
 
-    X_train, masks_train, Y_train = tokenize_with_new_mask(X_train_raw, args.max_length, tokenizer, Y_train_raw, label_map)
-    X_dev, masks_dev, Y_dev = tokenize_with_new_mask(X_dev_raw, args.max_length, tokenizer, Y_dev_raw, label_map)
-    X_test, masks_test, Y_test = tokenize_with_new_mask(X_test_raw, 128, tokenizer, Y_test_raw, label_map)
+    # X_train_raw, Y_train_raw = X_train_raw[:5], Y_train_raw[:5]
+    # X_dev_raw, Y_dev_raw = X_dev_raw[:5], Y_dev_raw[:5]
+    # X_test_raw, Y_test_raw = X_test_raw[:5], Y_test_raw[:5]
+
+    X_train, masks_train, Y_train = tokenize_with_new_mask_inc(X_train_raw, args.max_length, tokenizer, Y_train_raw, label_map)
+    X_dev, masks_dev, Y_dev = tokenize_with_new_mask_inc(X_dev_raw, args.max_length, tokenizer, Y_dev_raw, label_map)
+    X_test, masks_test, Y_test = tokenize_with_new_mask_inc(X_test_raw, 128, tokenizer, Y_test_raw, label_map)
+
+    print('RAW', len(X_train_raw))
+    print('LEN',len(X_train))
 
     # weight of each class in loss function
     class_weight = None
