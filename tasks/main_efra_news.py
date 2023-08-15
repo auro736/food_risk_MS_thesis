@@ -25,26 +25,26 @@ random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
 
-def split_df(data):
-    random_indices = np.random.permutation(data.index)
+# def split_df(data):
+#     random_indices = np.random.permutation(data.index)
 
-    train_ratio = 0.6
-    val_ratio = 0.2
-    test_ratio = 0.2
+#     train_ratio = 0.6
+#     val_ratio = 0.2
+#     test_ratio = 0.2
 
-    num_samples = len(data)
-    num_train = int(num_samples * train_ratio)
-    num_val = int(num_samples * val_ratio)
+#     num_samples = len(data)
+#     num_train = int(num_samples * train_ratio)
+#     num_val = int(num_samples * val_ratio)
 
-    train_indices = random_indices[:num_train]
-    val_indices = random_indices[num_train:num_train + num_val]
-    test_indices = random_indices[num_train + num_val:]
+#     train_indices = random_indices[:num_train]
+#     val_indices = random_indices[num_train:num_train + num_val]
+#     test_indices = random_indices[num_train + num_val:]
 
-    train_set = data.loc[train_indices]
-    val_set = data.loc[val_indices]
-    test_set = data.loc[test_indices]
+#     train_set = data.loc[train_indices]
+#     val_set = data.loc[val_indices]
+#     test_set = data.loc[test_indices]
     
-    return train_set, val_set, test_set
+#     return train_set, val_set, test_set
 
 def main():
 
@@ -79,7 +79,7 @@ def main():
     # news = pd.read_pickle(data_path)
     # train_news, val_news, test_news = split_df(news)
 
-    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/News/'
+    data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/'
 
     train_news = pd.read_pickle(data_path + 'train_news.p')
     val_news = pd.read_pickle(data_path + 'val_news.p')
@@ -103,12 +103,12 @@ def main():
     if args.from_finetuned:
         print('USING FINETUNED MODEL')
 
-        model_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-        config_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
+        # model_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+        # config_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
         
         # SE USI HPC
-        # model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/' + model_name + '/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-        # config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/' + model_name + '/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/config.json'
+        model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/xlm-roberta-large/bertweet-seq/14_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
+        config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/xlm-roberta-large/bertweet-seq/14_epoch/data/True_weight/42_seed/saved-model/config.json'
         
         model = load_local_TRC_model(model_path, config_path, device, model_name)
         
@@ -119,9 +119,9 @@ def main():
 
 
     model = model.to(device)
-    X_train_raw, Y_train = X_train_raw[:5], Y_train[:5]
-    X_dev_raw, Y_dev = X_dev_raw[:5], Y_dev[:5]
-    X_test_raw, Y_test = X_test_raw[:5], Y_test[:5]
+    # X_train_raw, Y_train = X_train_raw[:5], Y_train[:5]
+    # X_dev_raw, Y_dev = X_dev_raw[:5], Y_dev[:5]
+    # X_test_raw, Y_test = X_test_raw[:5], Y_test[:5]
     
 
     X_train, masks_train = tokenize_with_new_mask_news(X_train_raw, args.max_length, tokenizer)

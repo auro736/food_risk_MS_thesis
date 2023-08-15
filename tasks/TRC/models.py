@@ -14,7 +14,7 @@ class ModelForWeightedSequenceClassification(PreTrainedModel):
     def __init__(self, model_name, config):
         super().__init__(config)
         self.model_name = model_name
-        self.model = AutoModel.from_pretrained(model_name, config = config, add_pooling_layer=False)
+        self.model = AutoModel.from_pretrained(model_name, config = config, add_pooling_layer=False, ignore_mismatched_sizes=True)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.classifier = nn.Linear(config.hidden_size, config.num_labels)
         self.num_labels = config.num_labels

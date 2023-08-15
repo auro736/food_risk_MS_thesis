@@ -21,10 +21,13 @@ from TRC.models import ModelForWeightedSequenceClassification, ModelForWeightedS
 # args = my_parser()
 def load_local_TRC_model(model_path, config_path, device, model_name):
 
-    config = config = AutoConfig.from_pretrained(config_path)
-
+    config = AutoConfig.from_pretrained(config_path)
+    
+    # print(model_name)
     model = ModelForWeightedSequenceClassification(model_name=model_name,config=config)
+    # print(model)
     checkpoint = torch.load(model_path, map_location=device)
+    # print(heckpoint)
     model.load_state_dict(checkpoint)
 
     return model
