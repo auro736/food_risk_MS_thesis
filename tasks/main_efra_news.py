@@ -107,8 +107,8 @@ def main():
         # config_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
         
         # SE USI HPC
-        model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/xlm-roberta-large/bertweet-seq/14_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-        config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/xlm-roberta-large/bertweet-seq/14_epoch/data/True_weight/42_seed/saved-model/config.json'
+        model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/twitter-roberta-large-2022-154m/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
+        config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/twitter-roberta-large-2022-154m/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/config.json'
         
         model = load_local_TRC_model(model_path, config_path, device, model_name)
         

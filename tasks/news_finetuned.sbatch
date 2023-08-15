@@ -27,7 +27,7 @@ which pip && which python
 
 
 python tasks/main_efra_news.py \
-    --bert_model xlm-roberta-base \
+    --bert_model cardiffnlp/twitter-roberta-large-2022-154m \
     --n_epochs 10 \
     --from_finetuned \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
