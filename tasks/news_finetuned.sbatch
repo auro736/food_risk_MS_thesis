@@ -6,7 +6,7 @@
 #SBATCH --partition=cuda        
 #SBATCH --cpus-per-task=1       
 #SBATCH --gres=gpu:1   
-#SBATCH --time=01:00:00          
+#SBATCH --time=00:40:00          
 #SBATCH --mail-type=ALL        
 #SBATCH --mem=10GB
 
@@ -27,8 +27,8 @@ which pip && which python
 
 
 python tasks/main_efra_news.py \
-    --bert_model cardiffnlp/twitter-roberta-large-2022-154m \
-    --n_epochs 10 \
+    --bert_model roberta-large \
+    --n_epochs 6 \
     --from_finetuned \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
     --model_type bertweet-seq \

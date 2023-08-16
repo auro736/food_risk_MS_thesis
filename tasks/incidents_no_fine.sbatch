@@ -1,12 +1,12 @@
 #!/bin/sh
-#SBATCH --job-name=incidents_finetuned
+#SBATCH --job-name=incidents_no_finetuned
 #SBATCH --output=/home/agensale/output_efra/incidents_no_finetuned.out
 #SBATCH --nodes=1            
 #SBATCH --ntasks=1     
 #SBATCH --partition=cuda        
 #SBATCH --cpus-per-task=1       
 #SBATCH --gres=gpu:1   
-#SBATCH --time=00:30:00          
+#SBATCH --time=08:00:00          
 #SBATCH --mail-type=ALL        
 #SBATCH --mem=10GB
 
