@@ -13,7 +13,7 @@ from EMD.models import *
 from EMD.utils import train, evaluate, predict, load_model, load_local_EMD_model
 
 from EFRA.custom_parser import my_parser
-from EFRA.utils import tokenize_with_new_mask_inc
+from EFRA.utils import tokenize_with_new_mask_inc, tokenize_with_new_mask_inc_train
 
 from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
 
@@ -53,21 +53,21 @@ def main():
         os.makedirs(modeldir, exist_ok=True)
         print(f"Create modeldir: {modeldir}")
 
-    incidents_train = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/train_inc.p')
-    incidents_val = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/val_inc.p')
-    incidents_test = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/test_inc.p')
+    incidents_train_raw = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/train_inc.p')
+    incidents_val_raw = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/val_inc.p')
+    incidents_test_raw = pd.read_pickle('/home/cc/rora_tesi_new/data/SampleAgroknow/Incidents/test_inc.p')
     
-    # print(len(incidents_train_raw))
-    # print(len(incidents_val_raw))
-    # print(len(incidents_test_raw))
+    print(len(incidents_train_raw))
+    print(len(incidents_val_raw))
+    print(len(incidents_test_raw))
 
-    # incidents_train = incidents_train_raw.sample(n = 2000, random_state = 42)
-    # incidents_val = incidents_val_raw.sample(n = 1000, random_state = 42)
-    # incidents_test = incidents_test_raw.sample(n = 1000, random_state = 42)
+    incidents_train = incidents_train_raw.sample(n = 2800, random_state = 42)
+    incidents_val = incidents_val_raw.sample(n = 350, random_state = 42)
+    incidents_test = incidents_test_raw.sample(n = 350, random_state = 42)
 
-    # print(len(incidents_train))
-    # print(len(incidents_val))
-    # print(len(incidents_test))
+    print(len(incidents_train))
+    print(len(incidents_val))
+    print(len(incidents_test))
 
 
     # need_columns = ['tokens_clean', 'entity_label', 'sentence_class']
@@ -93,12 +93,12 @@ def main():
     if args.from_finetuned:
         print('USING FINETUNED MODEL')
 
-        # model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-        # config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
+        model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+        config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
         
         # SE USI HPC
-        model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-        config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/config.json'
+        # model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
+        # config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/config.json'
         
         model, config = load_local_EMD_model(model_path, config_path, device, model_name)
         model.config.update({'num_labels': len(labels), })
@@ -119,11 +119,11 @@ def main():
 
     model = model.to(device)
 
-    # X_train_raw, Y_train_raw = X_train_raw[:2400], Y_train_raw[:2400]
-    # X_dev_raw, Y_dev_raw = X_dev_raw[:300], Y_dev_raw[:300]
-    # X_test_raw, Y_test_raw = X_test_raw[:300], Y_test_raw[:300]
+    # X_train_raw, Y_train_raw = X_train_raw[:2], Y_train_raw[:2]
+    # X_dev_raw, Y_dev_raw = X_dev_raw[:2], Y_dev_raw[:2]
+    # X_test_raw, Y_test_raw = X_test_raw[:2], Y_test_raw[:2]
 
-    X_train, masks_train, Y_train = tokenize_with_new_mask_inc(X_train_raw, args.max_length, tokenizer, Y_train_raw, label_map)
+    X_train, masks_train, Y_train = tokenize_with_new_mask_inc_train(X_train_raw, args.max_length, tokenizer, Y_train_raw, label_map)
     X_dev, masks_dev, Y_dev = tokenize_with_new_mask_inc(X_dev_raw, args.max_length, tokenizer, Y_dev_raw, label_map)
     X_test, masks_test, Y_test = tokenize_with_new_mask_inc(X_test_raw, 128, tokenizer, Y_test_raw, label_map)
 

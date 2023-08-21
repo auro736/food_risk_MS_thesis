@@ -1,6 +1,9 @@
 import six
 import numpy as np
 from common_utils import pad_sequences
+import random
+
+random.seed(42)
 
 def simple_tokenize_news(orig_tokens, tokenizer):
     """
@@ -48,6 +51,56 @@ def simple_tokenize_inc(orig_tokens, tokenizer, orig_labels, label_map, max_seq_
 
     return bert_tokens, label_ids
 
+def tokenize_with_new_mask_inc_train(orig_text, max_length, tokenizer, orig_labels, label_map):
+
+    pad_token_label_id = -100
+
+    bert_tokens = []
+    label_ids = []
+    for t, labels in zip(orig_text, orig_labels):
+        # t lista di sentences
+        tmp = []
+        for s, l in zip(t, labels):
+            if len(s) > 3:
+                if not all(elemento == "O" for elemento in l):
+                    # print(s)
+                    # print(l)
+                    bert_tokens.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[0])
+                    label_ids.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[1])
+                else:
+                    # print(s)
+                    # print(l)
+                    rnd = random.uniform(0,1)
+                    if rnd < 0.2:
+                        bert_tokens.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[0])
+                        label_ids.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[1])
+
+            # if len(s) > 3:
+            #     bert_tokens.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[0])
+            #     label_ids.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[1])
+
+    # print(bert_tokens)
+    # print('AAAAAAAA',  label_ids)
+    # print(len(bert_tokens))
+    # print(len(label_ids))
+
+    
+    input_ids = [tokenizer.convert_tokens_to_ids(x) for x in bert_tokens]
+    
+    # print(len(input_ids))
+    input_ids = pad_sequences(input_ids, maxlen=max_length, dtype="long", truncating="post", padding="post")
+    label_ids = pad_sequences(label_ids, maxlen=max_length, dtype="long", truncating="post", padding="post",
+                              value=pad_token_label_id)
+    # print(len(input_ids))
+    # print(len(input_ids[0]))
+    attention_masks = []
+    for seq in input_ids:
+        seq_mask = [float(i > 0) for i in seq]
+        attention_masks.append(seq_mask)
+    attention_masks = np.array(attention_masks)
+
+    return input_ids, attention_masks, label_ids
+
 def tokenize_with_new_mask_inc(orig_text, max_length, tokenizer, orig_labels, label_map):
 
     pad_token_label_id = -100
@@ -58,7 +111,7 @@ def tokenize_with_new_mask_inc(orig_text, max_length, tokenizer, orig_labels, la
         # t lista di sentences
         tmp = []
         for s, l in zip(t, labels):
-            if len(s) > 1:
+            if len(s) > 3:
                 bert_tokens.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[0])
                 label_ids.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[1])
 
@@ -66,7 +119,6 @@ def tokenize_with_new_mask_inc(orig_text, max_length, tokenizer, orig_labels, la
     # print('AAAAAAAA',  label_ids)
     # print(len(bert_tokens))
     # print(len(label_ids))
-
     
     input_ids = [tokenizer.convert_tokens_to_ids(x) for x in bert_tokens]
     
