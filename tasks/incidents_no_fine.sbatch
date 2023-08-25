@@ -31,3 +31,5 @@ python tasks/main_efra_incidents.py \
     --bert_model roberta-large \
     --model_type bertweet-token-crf \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
+    --learning_rate 1e-5 \
+    --max_length 200 \

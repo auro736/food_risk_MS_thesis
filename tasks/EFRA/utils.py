@@ -67,11 +67,11 @@ def tokenize_with_new_mask_inc_train(orig_text, max_length, tokenizer, orig_labe
                     # print(l)
                     bert_tokens.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[0])
                     label_ids.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[1])
-                else:
+                else: # tutti i token senza label ner
                     # print(s)
                     # print(l)
                     rnd = random.uniform(0,1)
-                    if rnd < 0.2:
+                    if rnd <= 0.3:
                         bert_tokens.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[0])
                         label_ids.append(simple_tokenize_inc(s, tokenizer, l, label_map, max_length)[1])
     
