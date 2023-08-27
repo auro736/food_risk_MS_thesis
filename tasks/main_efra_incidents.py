@@ -127,8 +127,11 @@ def main():
     X_dev, masks_dev, Y_dev = tokenize_with_new_mask_inc(X_dev_raw, args.max_length, tokenizer, Y_dev_raw, label_map)
     X_test, masks_test, Y_test = tokenize_with_new_mask_inc(X_test_raw, args.max_length, tokenizer, Y_test_raw, label_map)
 
-    print('RAW', len(X_train_raw))
-    print('LEN',len(X_train))
+    print('X_train',len(X_train))
+    print('X_val',len(X_dev))
+    print('X_train',len(X_test))
+
+
 
     # weight of each class in loss function
     class_weight = None
