@@ -36,7 +36,7 @@ def my_parser():
 
     parser.add_argument("--early_stop", default=False, action='store_true')
 
-    parser.add_argument("--assign_weight", default=True, action='store_true')
+    parser.add_argument("--assign_weight", default=False, action='store_true')
 
     # parser.add_argument("--train_file", default='train.p', type=str)
 

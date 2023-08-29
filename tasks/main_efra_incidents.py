@@ -74,8 +74,8 @@ def main():
 
     need_columns = ['words', 'entity_label']
 
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    device = "cpu"
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+  
 
     model_name = args.bert_model
 
@@ -119,9 +119,9 @@ def main():
 
     model = model.to(device)
 
-    X_train_raw, Y_train_raw = X_train_raw[:10], Y_train_raw[:10]
-    X_dev_raw, Y_dev_raw = X_dev_raw[:10], Y_dev_raw[:10]
-    X_test_raw, Y_test_raw = X_test_raw[:10], Y_test_raw[:10]
+    # X_train_raw, Y_train_raw = X_train_raw[:10], Y_train_raw[:10]
+    # X_dev_raw, Y_dev_raw = X_dev_raw[:10], Y_dev_raw[:10]
+    # X_test_raw, Y_test_raw = X_test_raw[:10], Y_test_raw[:10]
 
     X_train, masks_train, Y_train = tokenize_with_new_mask_inc_train(X_train_raw, args.max_length, tokenizer, Y_train_raw, label_map)
     X_dev, masks_dev, Y_dev = tokenize_with_new_mask_inc(X_dev_raw, args.max_length, tokenizer, Y_dev_raw, label_map)
