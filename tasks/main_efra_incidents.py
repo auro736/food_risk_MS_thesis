@@ -31,11 +31,11 @@ def main():
 
     args = my_parser()
     if args.from_finetuned:
-        log_directory = args.log_dir +'/' + str(args.bert_model).split('/')[-1] + '/incidents/from_finetuned' + '/' + args.model_type + '/' \
+        log_directory = args.log_dir +'/incidents/' + str(args.bert_model).split('/')[-1] + '/from_finetuned' + '/' + args.model_type + '/' \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
                     str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
     else:
-        log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] + '/incidents/no_finetuned' + '/' + args.model_type + '/' \
+        log_directory = args.log_dir + '/incidents/' + str(args.bert_model).split('/')[-1] + '/no_finetuned' + '/' + args.model_type + '/' \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
                     str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
         
