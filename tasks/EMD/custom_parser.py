@@ -16,7 +16,7 @@ def my_parser():
 
     parser.add_argument('--rnn_hidden_size', default=384, type=int)
 
-    parser.add_argument('--batch_size', default=16, type=int)
+    parser.add_argument('--batch_size', default=32, type=int)
 
     parser.add_argument('--eval_batch_size', default=300, type=int)
 
@@ -30,7 +30,7 @@ def my_parser():
 
     parser.add_argument('--log_dir', default='log/log_EMD', type=str)
 
-    parser.add_argument("--save_model", default=True, action='store_true')
+    parser.add_argument("--save_model", default=False, action='store_true')
 
     parser.add_argument("--early_stop", default=False, action='store_true')
 

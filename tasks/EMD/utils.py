@@ -72,8 +72,8 @@ def tokenize_with_new_mask(orig_text, max_length, tokenizer, orig_labels, label_
     attention labels array and attention masks array
     """
     pad_token_label_id = -100
-    print(orig_text[1])
-    print(orig_labels[1])
+    # print(orig_text[1])
+    # print(orig_labels[1])
     simple_tokenize_results = [list(tt) for tt in zip(
         *[simple_tokenize(orig_text[i], tokenizer, orig_labels[i], label_map, max_length) for i in
           range(len(orig_text))])]

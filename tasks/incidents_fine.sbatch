@@ -1,6 +1,6 @@
 #!/bin/sh
 #SBATCH --job-name=incidents_finetuned
-#SBATCH --output=/home/agensale/output_efra/incidents_finetuned.out
+#SBATCH --output=/home/agensale/output_efra/rb_incidents_finetuned.out
 #SBATCH --nodes=1            
 #SBATCH --ntasks=1     
 #SBATCH --partition=cuda        
@@ -27,11 +27,11 @@ which pip && which python
 
 
 python tasks/main_efra_incidents.py \
-    --bert_model roberta-large \
+    --bert_model roberta-base \
     --n_epochs 6 \
     --from_finetuned \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
     --model_type bertweet-token-crf \
-    --learning_rate 1e-6 \
+    --learning_rate 1e-5 \
     --max_length 128 \
 

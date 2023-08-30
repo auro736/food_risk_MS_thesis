@@ -75,7 +75,7 @@ def main():
     need_columns = ['words', 'entity_label']
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-  
+    print(str(device).upper())
 
     model_name = args.bert_model
 
