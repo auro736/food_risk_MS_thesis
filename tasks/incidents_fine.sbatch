@@ -6,9 +6,9 @@
 #SBATCH --partition=cuda        
 #SBATCH --cpus-per-task=1       
 #SBATCH --gres=gpu:1   
-#SBATCH --time=08:00:00          
+#SBATCH --time=02:30:00          
 #SBATCH --mail-type=ALL        
-#SBATCH --mem=10GB
+#SBATCH --mem=5GB
 
 module load nvidia/cudasdk/11.6
 #9.2
