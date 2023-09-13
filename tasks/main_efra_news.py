@@ -31,11 +31,11 @@ def main():
     args = my_parser()
 
     if args.from_finetuned:
-        log_directory = args.log_dir +'/news/' + str(args.bert_model).split('/')[-1] + '/from_finetuned' + '/' + args.model_type + '/' \
+        log_directory = args.log_dir +'/news/' + str(args.bert_model).split('/')[-1] + '/from_finetuned' + '/'  \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
                     str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
     else:
-        log_directory = args.log_dir + '/news/' + str(args.bert_model).split('/')[-1] + '/no_finetuned' + '/' + args.model_type + '/' \
+        log_directory = args.log_dir + '/news/' + str(args.bert_model).split('/')[-1] + '/no_finetuned' + '/' \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
                     str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
         
@@ -54,7 +54,8 @@ def main():
         print(f"Create modeldir: {modeldir}")    
 
 
-    data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/'
+    # data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/'
+    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/News/'
 
     train_news = pd.read_pickle(data_path + 'news_train_EN.p')
     val_news = pd.read_pickle(data_path + 'news_val_EN.p')

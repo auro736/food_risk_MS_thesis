@@ -24,7 +24,7 @@ def main():
 
     print("cuda is available:", torch.cuda.is_available())
 
-    log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] + '/' + args.model_type + '/' \
+    log_directory = args.log_dir + '/' + str(args.bert_model).split('/')[-1] +  '/' \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
                     str(args.assign_weight) + '_weight/' + str(args.seed) + '_seed/'
     log_filename = 'log.' + str(datetime.datetime.now()).replace(' ', '--').replace(':', '-').replace('.', '-') + '.txt'
