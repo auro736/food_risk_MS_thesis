@@ -77,7 +77,8 @@ def main():
     config = AutoConfig.from_pretrained(args.bert_model)
     config.update({'num_labels': len(set(Y_train))})
     
-    model = load_model(args.model_type, args.bert_model, config)
+    # model = load_model(args.model_type, args.bert_model, config)
+    model = load_model(args.bert_model, config)
     
     param_optimizer = list(model.named_parameters())
     no_decay = ["bias", "LayerNorm.weight"]

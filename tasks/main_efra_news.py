@@ -94,7 +94,9 @@ def main():
     else: 
         print('NO FINETUNED')
         config = AutoConfig.from_pretrained(args.bert_model)
-        model = load_model(args.model_type, args.bert_model, config)
+        # model = load_model(args.model_type, args.bert_model, config)
+        model = load_model(args.bert_model, config)
+
 
 
     model = model.to(device)

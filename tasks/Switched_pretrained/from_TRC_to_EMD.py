@@ -25,7 +25,9 @@ config_TRC = AutoConfig.from_pretrained(config_path_TRC)
 
 config_EMD = AutoConfig.from_pretrained(config_path_EMD)
 
-model_TRC = TRC.utils.load_model('bertweet-seq', saved_model_path_TRC, config_TRC)
+# model_TRC = TRC.utils.load_model('bertweet-seq', saved_model_path_TRC, config_TRC)
+model_TRC = TRC.utils.load_model(saved_model_path_TRC, config_TRC)
+
 
 model_EMD = EMD.utils.load_model('bertweet-token-crf', saved_model_path_EMD, config_EMD)
 

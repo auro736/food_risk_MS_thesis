@@ -27,7 +27,9 @@ config_TRC = AutoConfig.from_pretrained(config_path_TRC)
 
 config_EMD = AutoConfig.from_pretrained(config_path_EMD)
 
-model_TRC = TRC.utils.load_model('bertweet-seq', saved_model_path_TRC, config_TRC)
+# model_TRC = TRC.utils.load_model('bertweet-seq', saved_model_path_TRC, config_TRC)
+model_TRC = TRC.utils.load_model(saved_model_path_TRC, config_TRC)
+
 
 model_EMD = EMD.utils.load_model('bertweet-token-crf', saved_model_path_EMD, config_EMD)
 
@@ -73,7 +75,8 @@ print(model_EMD.config.num_labels)
 
 config_EMD.update({'num_labels': 2})
 #print(config_TRC.num_labels)
-model_new = TRC.utils.load_model('bertweet-seq', saved_model_path_EMD, config_EMD)
+# model_new = TRC.utils.load_model('bertweet-seq', saved_model_path_EMD, config_EMD)
+model_new = TRC.utils.load_model(saved_model_path_EMD, config_EMD)
 print(model_new.config.num_labels)
 
 model_new.load_state_dict(sd_EMD_new)

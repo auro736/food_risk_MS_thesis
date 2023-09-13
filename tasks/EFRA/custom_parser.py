@@ -11,7 +11,7 @@ def my_parser():
 
     parser.add_argument("--bert_model", default='roberta-large', type=str)
 
-    parser.add_argument("--model_type", default='bertweet-seq', type=str)
+    # parser.add_argument("--model_type", default='bertweet-seq', type=str)
     
     parser.add_argument("--task_type", default='entity_detection', type=str)
 
@@ -19,7 +19,7 @@ def my_parser():
 
     parser.add_argument('--max_length', default=128, type=int)
 
-    parser.add_argument('--rnn_hidden_size', default=384, type=int)
+    # parser.add_argument('--rnn_hidden_size', default=384, type=int)
 
     parser.add_argument('--batch_size', default=32, type=int)
 
@@ -51,6 +51,6 @@ def my_parser():
 
     # parser.add_argument("--performance_file", default='performance/performance_EFRA.txt', type=str)
 
-    parser.add_argument("--embeddings_file", default='glove.840B.300d.txt', type=str)
+    # parser.add_argument("--embeddings_file", default='glove.840B.300d.txt', type=str)
 
     return parser.parse_args()
