@@ -25,26 +25,6 @@ random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
 
-# def split_df(data):
-#     random_indices = np.random.permutation(data.index)
-
-#     train_ratio = 0.6
-#     val_ratio = 0.2
-#     test_ratio = 0.2
-
-#     num_samples = len(data)
-#     num_train = int(num_samples * train_ratio)
-#     num_val = int(num_samples * val_ratio)
-
-#     train_indices = random_indices[:num_train]
-#     val_indices = random_indices[num_train:num_train + num_val]
-#     test_indices = random_indices[num_train + num_val:]
-
-#     train_set = data.loc[train_indices]
-#     val_set = data.loc[val_indices]
-#     test_set = data.loc[test_indices]
-    
-#     return train_set, val_set, test_set
 
 def main():
 
@@ -74,18 +54,14 @@ def main():
         print(f"Create modeldir: {modeldir}")    
 
 
-    # data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/news_updated.p'
-    
-    # news = pd.read_pickle(data_path)
-    # train_news, val_news, test_news = split_df(news)
-
     data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/'
 
-    train_news = pd.read_pickle(data_path + 'train_news.p')
-    val_news = pd.read_pickle(data_path + 'val_news.p')
-    test_news = pd.read_pickle(data_path + 'test_news.p')
+    train_news = pd.read_pickle(data_path + 'news_train_EN.p')
+    val_news = pd.read_pickle(data_path + 'news_val_EN.p')
+    test_news = pd.read_pickle(data_path + 'news_test_EN.p')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(device)
 
     model_name = args.bert_model
 
@@ -107,9 +83,12 @@ def main():
         # config_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
         
         # SE USI HPC
-        model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/roberta-large/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-        config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/roberta-large/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/config.json'
+        # model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/roberta-large/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
+        # config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/roberta-large/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/config.json'
 
+        model_path = args.saved_model_path + 'pytorch_model.bin'
+        config_path = args.saved_model_path + 'config.json'
+        
         model = load_local_TRC_model(model_path, config_path, device, model_name)
         
     else: 
@@ -119,9 +98,10 @@ def main():
 
 
     model = model.to(device)
-    # X_train_raw, Y_train = X_train_raw[:5], Y_train[:5]
-    # X_dev_raw, Y_dev = X_dev_raw[:5], Y_dev[:5]
-    # X_test_raw, Y_test = X_test_raw[:5], Y_test[:5]
+
+    X_train_raw, Y_train = X_train_raw[:5], Y_train[:5]
+    X_dev_raw, Y_dev = X_dev_raw[:5], Y_dev[:5]
+    X_test_raw, Y_test = X_test_raw[:5], Y_test[:5]
     
 
     X_train, masks_train = tokenize_with_new_mask_news(X_train_raw, args.max_length, tokenizer)
@@ -129,9 +109,9 @@ def main():
     X_test, masks_test = tokenize_with_new_mask_news(X_test_raw, args.max_length, tokenizer)
 
     # weight of each class in loss function
-    assign_weight = True
+    
     class_weight = None
-    if assign_weight:
+    if args.assign_weight:
         class_weight = [np.array(Y_train).shape[0] / (np.array(Y_train) == i).sum() for i in range(len(set(Y_train)))]
         class_weight = torch.FloatTensor(class_weight)
         
@@ -151,6 +131,9 @@ def main():
     train_losses = []
     eval_losses = []
     train_acc_list, eval_acc_list = [], []
+    epoch_best_valid_acc = 0
+    epoch_best_valid_prec = 0
+    epoch_best_valid_rec = 0
 
 
     for epoch in range(args.n_epochs):
@@ -182,6 +165,8 @@ def main():
 
         if best_valid_acc < valid_acc or epoch == 0:
             best_valid_acc = valid_acc
+            epoch_best_valid_acc = epoch + 1
+
             best_valid_auc = valid_auc
             best_valid_tn = valid_tn
             best_valid_fp = valid_fp
@@ -189,7 +174,9 @@ def main():
             best_valid_tp = valid_tp
 
             best_valid_precision = valid_precision
+            epoch_best_valid_prec = epoch + 1
             best_valid_recall = valid_recall
+            epoch_best_valid_rec = epoch + 1
 
             best_train_auc = train_auc
             best_train_acc = train_acc
@@ -212,7 +199,7 @@ def main():
         print(f'Val. Precision: {valid_precision * 100:.2f}%')
         print(f'Val. Recall: {valid_recall * 100:.2f}%')
 
-    print(f"After {epoch + 1} epoch, Best valid accuracy: {best_valid_acc}, Best valid precision: {best_valid_precision* 100:.2f}%, Best valid recall: {best_valid_recall* 100:.2f}%")
+    print(f"After {epoch + 1} epoch, Best valid accuracy: {best_valid_acc} at epoch: {epoch_best_valid_acc}, Best valid precision: {best_valid_precision* 100:.2f}% at epoch {epoch_best_valid_prec}, Best valid recall: {best_valid_recall* 100:.2f}% at epoch {epoch_best_valid_rec}")
 
     performance_dict = vars(args)
     performance_dict['S_best_train_AUC'] = best_train_auc
@@ -227,13 +214,17 @@ def main():
 
     performance_dict['S_best_valid_AUC'] = best_valid_auc
     performance_dict['S_best_valid_ACC'] = best_valid_acc
+    performance_dict['S_epoch_best_valid_acc'] = epoch_best_valid_acc
+
     performance_dict['S_best_valid_TN'] = best_valid_tn
     performance_dict['S_best_valid_FP'] = best_valid_fp
     performance_dict['S_best_valid_FN'] = best_valid_fn
     performance_dict['S_best_valid_TP'] = best_valid_tp
 
     performance_dict['S_best_valid_precision'] = best_valid_precision
+    performance_dict['S_epoch_best_valid_prec'] = epoch_best_valid_prec
     performance_dict['S_best_valid_recall'] = best_valid_recall
+    performance_dict['S_epoch_best_valid_rec'] = epoch_best_valid_rec
 
     # Plot training classification loss
     epoch_count = np.arange(1, epoch + 2)

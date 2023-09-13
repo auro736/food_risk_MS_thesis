@@ -4,11 +4,14 @@ def my_parser():
 
     parser = argparse.ArgumentParser()
 
+    # mettere path fino all'ultimo / non mettere nome file .bin e .json 
+    parser.add_argument("--saved_model_path", default=None, type=str)
+
     parser.add_argument("--from_finetuned", default = False, action = 'store_true')
 
     parser.add_argument("--bert_model", default='roberta-large', type=str)
 
-    parser.add_argument("--model_type", default='bertweet-token-crf', type=str)
+    parser.add_argument("--model_type", default='bertweet-seq', type=str)
     
     parser.add_argument("--task_type", default='entity_detection', type=str)
 
