@@ -54,8 +54,7 @@ def main():
         print(f"Create modeldir: {modeldir}")    
 
 
-    # data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/'
-    data_path = '/home/cc/rora_tesi_new/data/SampleAgroknow/News/'
+    data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/'
 
     train_news = pd.read_pickle(data_path + 'news_train_EN.p')
     val_news = pd.read_pickle(data_path + 'news_val_EN.p')
@@ -102,9 +101,9 @@ def main():
 
     model = model.to(device)
 
-    X_train_raw, Y_train = X_train_raw[:5], Y_train[:5]
-    X_dev_raw, Y_dev = X_dev_raw[:5], Y_dev[:5]
-    X_test_raw, Y_test = X_test_raw[:5], Y_test[:5]
+    # X_train_raw, Y_train = X_train_raw[:5], Y_train[:5]
+    # X_dev_raw, Y_dev = X_dev_raw[:5], Y_dev[:5]
+    # X_test_raw, Y_test = X_test_raw[:5], Y_test[:5]
     
 
     X_train, masks_train = tokenize_with_new_mask_news(X_train_raw, args.max_length, tokenizer)

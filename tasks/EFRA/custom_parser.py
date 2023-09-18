@@ -11,7 +11,7 @@ def my_parser():
 
     parser.add_argument("--bert_model", default='roberta-large', type=str)
 
-    # parser.add_argument("--model_type", default='bertweet-seq', type=str)
+    parser.add_argument("--model_type", default='bertweet-token-crf', type=str)
     
     parser.add_argument("--task_type", default='entity_detection', type=str)
 

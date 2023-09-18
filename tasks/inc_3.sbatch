@@ -1,12 +1,12 @@
 #!/bin/sh
-#SBATCH --job-name=news_2
-#SBATCH --output=/home/agensale/output_efra/news_2.out
+#SBATCH --job-name=inc_3
+#SBATCH --output=/home/agensale/output_efra/inc_3.out
 #SBATCH --nodes=1            
 #SBATCH --ntasks=1     
 #SBATCH --partition=cuda        
 #SBATCH --cpus-per-task=1       
 #SBATCH --gres=gpu:1   
-#SBATCH --time=01:00:00          
+#SBATCH --time=10:00:00          
 #SBATCH --mail-type=ALL        
 #SBATCH --mem=5GB
 
@@ -26,8 +26,8 @@ source ~/miniconda3/bin/activate rora_venv
 which pip && which python
 
 
-python tasks/main_efra_news.py \
-    --bert_model cardiffnlp/twitter-roberta-large-2022-154m \
+python tasks/main_efra_incidents.py \
+    --bert_model xlm-roberta-large-finetuned-conll03-english \
     --n_epochs 10 \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
     --assign_weight \

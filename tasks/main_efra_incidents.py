@@ -53,9 +53,9 @@ def main():
         os.makedirs(modeldir, exist_ok=True)
         print(f"Create modeldir: {modeldir}")
 
-    incidents_train = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/train_inc_CORRETTO.p')
-    incidents_val = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/val_inc_CORRETTO.p')
-    incidents_test = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/test_inc_CORRETTO.p')
+    incidents_train = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/inc_train_EN_annotati.p')
+    incidents_val = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/inc_val_EN_annotati.p')
+    incidents_test = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/inc_test_EN_annotati.p')
     
     # print(len(incidents_train_raw))
     # print(len(incidents_val_raw))
