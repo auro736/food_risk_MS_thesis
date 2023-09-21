@@ -5,7 +5,7 @@ def my_parser():
     parser = argparse.ArgumentParser()
 
     # mettere path fino all'ultimo / non mettere nome file .bin e .json 
-    parser.add_argument("--saved_model_path", default=None, type=str)
+    parser.add_argument("--saved_model_path", default='/home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/', type=str)
 
     parser.add_argument("--from_finetuned", default = False, action = 'store_true')
 

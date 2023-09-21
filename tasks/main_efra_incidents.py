@@ -135,7 +135,6 @@ def main():
     print('X_train',len(X_test))
 
 
-
     # weight of each class in loss function
     class_weight = None
     if args.assign_weight: # default True
@@ -320,6 +319,7 @@ def main():
     performance_file = 'performance/performance_EFRA_incidents.txt'
     with open(performance_file, 'a+') as outfile:
         outfile.write(json.dumps(performance_dict) + '\n')
+        
     if not args.save_model:
         shutil.rmtree(modeldir)
 

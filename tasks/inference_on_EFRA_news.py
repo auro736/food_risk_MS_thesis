@@ -8,7 +8,7 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
+from common_utils import extract_from_dataframe, mask_batch_seq_generator
 
 from TRC.utils import load_local_TRC_model, evaluate
 
@@ -47,18 +47,20 @@ def main():
 
     model_path = args.saved_model_path + 'pytorch_model.bin'
     config_path = args.saved_model_path + 'config.json'
-        
+    
+    args.from_finetuned = 'True'
     model = load_local_TRC_model(model_path, config_path, device, model_name)
 
     model = model.to(device)
 
-    # X_train_raw, Y_train = X_train_raw[:5], Y_train[:5]
-    # X_test_raw, Y_test = X_test_raw[:5], Y_test[:5]
+    # X_train_raw, Y_train = X_train_raw[:100], Y_train[:100]
+    # X_test_raw, Y_test = X_test_raw[:100], Y_test[:100]
 
     X_train, masks_train = tokenize_with_new_mask_news(X_train_raw, args.max_length, tokenizer)
     X_test, masks_test = tokenize_with_new_mask_news(X_test_raw, args.max_length, tokenizer)
 
     class_weight = None
+    args.assign_weight = 'True'
     if args.assign_weight:
         class_weight = [np.array(Y_train).shape[0] / (np.array(Y_train) == i).sum() for i in range(len(set(Y_train)))]
         class_weight = torch.FloatTensor(class_weight)
@@ -89,7 +91,7 @@ def main():
     performance_dict['script_file'] = os.path.basename(__file__)
     performance_dict['note'] = 'piango'
     performance_dict['Time'] = str(datetime.datetime.now())
-    performance_dict['device'] = torch.cuda.get_device_name(device)
+    #performance_dict['device'] = torch.cuda.get_device_name(device)
     
     for key, value in performance_dict.items():
         if type(value) is np.int64:
