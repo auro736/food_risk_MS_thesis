@@ -96,10 +96,13 @@ def main():
         # model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
         # config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
         
-        # SE USI HPC
-        model_path = '/home/agensale/rora_tesi_new/log/log_EMD/roberta-base/bertweet-token-crf/20_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-        config_path = '/home/agensale/rora_tesi_new/log/log_EMD/roberta-base/bertweet-token-crf/20_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
+        # # SE USI HPC
+        # model_path = '/home/agensale/rora_tesi_new/log/log_EMD/roberta-base/bertweet-token-crf/20_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
+        # config_path = '/home/agensale/rora_tesi_new/log/log_EMD/roberta-base/bertweet-token-crf/20_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
         
+        model_path = args.saved_model_path + 'pytorch_model.bin'
+        config_path = args.saved_model_path + 'config.json'
+
         model, config = load_local_EMD_model(model_path, config_path, device, model_name)
         model.config.update({'num_labels': len(labels), })
         model.num_labels = config.num_labels
@@ -203,6 +206,8 @@ def main():
             best_valid_results_by_tag = valid_results_by_tag
             best_valid_CR = valid_CR
 
+            epoch_best_valid_F = epoch + 1
+
             best_train_acc = train_acc
             best_train_P = train_P
             best_train_R = train_R
@@ -234,6 +239,8 @@ def main():
     print(content)
 
     performance_dict = vars(args)
+    performance_dict['T_epoch_best_valid_F'] = epoch_best_valid_F
+
     performance_dict['T_best_train_F'] = best_train_F
     performance_dict['T_best_train_ACC'] = best_train_acc
     performance_dict['T_best_train_R'] = best_train_R

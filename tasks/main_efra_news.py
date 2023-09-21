@@ -216,6 +216,7 @@ def main():
 
     performance_dict['S_best_valid_AUC'] = best_valid_auc
     performance_dict['S_best_valid_ACC'] = best_valid_acc
+    
     performance_dict['S_epoch_best_valid_acc'] = epoch_best_valid_acc
 
     performance_dict['S_best_valid_TN'] = best_valid_tn
