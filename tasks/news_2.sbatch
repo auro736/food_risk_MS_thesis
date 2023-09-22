@@ -27,9 +27,9 @@ which pip && which python
 
 
 python tasks/main_efra_news.py \
-    --bert_model cardiffnlp/twitter-roberta-large-2022-154m \
+    --bert_model microsoft/deberta-v3-large \
     --n_epochs 10 \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
     --assign_weight \
     --from_finetuned \
-    --saved_model_path /home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/twitter-roberta-large-2022-154m/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/
+    --saved_model_path /home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/deberta-v3-large/bertweet-seq/16_epoch/data/True_weight/42_seed/saved-model/ \

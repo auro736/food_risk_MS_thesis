@@ -23,8 +23,11 @@ def load_local_TRC_model(model_path, config_path, device, model_name):
 
     config = AutoConfig.from_pretrained(config_path)
     
+    if 'deberta' in model_name.lower():
+        model = ModelForWeightedSequenceClassificationDeberta(model_name=model_name, config=config)
+    else:
     # print(model_name)
-    model = ModelForWeightedSequenceClassification(model_name=model_name,config=config)
+        model = ModelForWeightedSequenceClassification(model_name=model_name,config=config)
     # print(model)
     checkpoint = torch.load(model_path, map_location=device)
     # print(heckpoint)

@@ -31,4 +31,5 @@ python tasks/main_efra_news.py \
     --n_epochs 10 \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
     --assign_weight \
+    --save_model \
    

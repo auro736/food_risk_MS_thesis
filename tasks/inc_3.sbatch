@@ -32,4 +32,5 @@ python tasks/main_efra_incidents.py \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
     --assign_weight \
     --from_finetuned \
-    --saved_model_path /home/agensale/rora_tesi/log_rora_tesi/log-token-classification/deberta-v3-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/
+    --saved_model_path /home/agensale/rora_tesi/log_rora_tesi/log-token-classification/deberta-v3-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/ \
+    --save_model \

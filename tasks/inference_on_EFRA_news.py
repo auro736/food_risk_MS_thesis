@@ -28,6 +28,11 @@ def main():
 
     args = my_parser()
 
+    args.saved_model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/twitter-xlm-roberta-base/bertweet-seq/12_epoch/data/True_weight/42_seed/saved-model/'
+    args.bert_model = 'cardiffnlp/twitter-xlm-roberta-base'
+
+    model_name = args.bert_model
+
     train_news = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/News/news_train_EN.p')
     test_news = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/News/news_test_EN.p')
 
@@ -97,7 +102,7 @@ def main():
         if type(value) is np.int64:
             performance_dict[key] = int(value)
 
-    performance_file = 'performance/inferenze_EFRA_news.txt'
+    performance_file = '/home/agensale/rora_tesi_new/performance/inferenze_EFRA_news.txt'
     with open(performance_file, 'a+') as outfile:
         outfile.write(json.dumps(performance_dict) + '\n')
 

@@ -90,6 +90,7 @@ def main():
         config_path = args.saved_model_path + 'config.json'
         
         model = load_local_TRC_model(model_path, config_path, device, model_name)
+        print(model)
         
     else: 
         print('NO FINETUNED')
