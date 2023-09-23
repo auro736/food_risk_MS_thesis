@@ -28,7 +28,6 @@ torch.manual_seed(SEED)
 def main():
 
     args = my_parser()
-
     incidents_train = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/inc_train_EN_annotati.p')
     incidents_test = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/inc_test_EN_annotati.p')
 

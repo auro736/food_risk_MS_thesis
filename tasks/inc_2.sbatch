@@ -27,8 +27,10 @@ which pip && which python
 
 
 python tasks/main_efra_incidents.py \
-    --bert_model xlm-roberta-large \
+    --bert_model roberta-large \
     --n_epochs 10 \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
     --assign_weight \
     --save_model \
+    --from_finetuned \
+    --saved_model_path /home/agensale/rora_tesi/log_rora_tesi/log-token-classification/roberta-large/bertweet-token-crf/entity_detection/24_epoch/data/True_weight/42_seed/saved-model/ \
