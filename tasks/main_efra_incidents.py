@@ -17,19 +17,16 @@ from EFRA.utils import tokenize_with_new_mask_inc, tokenize_with_new_mask_inc_tr
 
 from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
 
-
-SEED = 42
-ASSIGN_WEIGHT = True
-NOTE = 'aaaa'
-
-random.seed(SEED)
-np.random.seed(SEED)
-torch.manual_seed(SEED)
-
+NOTE = 'Task: Incidents'
 
 def main():
 
     args = my_parser()
+
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+
     if args.from_finetuned:
         log_directory = args.log_dir +'/incidents/' + str(args.bert_model).split('/')[-1] + '/from_finetuned' + '/' + args.model_type + '/' \
                     + str(args.n_epochs) + '_epoch/' + args.data.split('/')[-1] + '/' + \
@@ -69,9 +66,6 @@ def main():
     # print(len(incidents_val))
     # print(len(incidents_test))
 
-
-    # need_columns = ['tokens_clean', 'entity_label', 'sentence_class']
-
     need_columns = ['words', 'entity_label']
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -93,13 +87,6 @@ def main():
     if args.from_finetuned:
         print('USING FINETUNED MODEL')
 
-        # model_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-        # config_path = '/home/cc/rora_tesi_new/log/log_EMD/xlm-roberta-large-finetuned-conll03-english/bertweet-token-crf/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
-        
-        # # SE USI HPC
-        # model_path = '/home/agensale/rora_tesi_new/log/log_EMD/roberta-base/bertweet-token-crf/20_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-        # config_path = '/home/agensale/rora_tesi_new/log/log_EMD/roberta-base/bertweet-token-crf/20_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
-        
         model_path = args.saved_model_path + 'pytorch_model.bin'
         config_path = args.saved_model_path + 'config.json'
 
@@ -137,7 +124,7 @@ def main():
 
     # weight of each class in loss function
     class_weight = None
-    if args.assign_weight: # default True
+    if args.assign_weight: 
         class_weight = [Y_train.shape[0] / (Y_train == i).sum() for i in range(len(labels))]
         class_weight = torch.FloatTensor(class_weight)
 

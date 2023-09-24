@@ -16,11 +16,7 @@ from EFRA.custom_parser import my_parser
 from EFRA.utils import tokenize_with_new_mask_news
 
 
-SEED = 42
-
-random.seed(SEED)
-np.random.seed(SEED)
-torch.manual_seed(SEED)
+NOTE = 'Inferenza modelli tweet su news'
 
 def main():
 
@@ -28,8 +24,9 @@ def main():
 
     args = my_parser()
 
-    args.saved_model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/twitter-xlm-roberta-base/bertweet-seq/12_epoch/data/True_weight/42_seed/saved-model/'
-    args.bert_model = 'cardiffnlp/twitter-xlm-roberta-base'
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     model_name = args.bert_model
 
@@ -45,7 +42,7 @@ def main():
 
     need_columns = ['words', 'sentence_class']
 
-    X_train_raw, Y_train = extract_from_dataframe(train_news, need_columns)
+    _, Y_train = extract_from_dataframe(train_news, need_columns)
     X_test_raw, Y_test = extract_from_dataframe(test_news, need_columns)
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, normalization = True)
@@ -61,11 +58,9 @@ def main():
     # X_train_raw, Y_train = X_train_raw[:100], Y_train[:100]
     # X_test_raw, Y_test = X_test_raw[:100], Y_test[:100]
 
-    X_train, masks_train = tokenize_with_new_mask_news(X_train_raw, args.max_length, tokenizer)
     X_test, masks_test = tokenize_with_new_mask_news(X_test_raw, args.max_length, tokenizer)
 
     class_weight = None
-    args.assign_weight = 'True'
     if args.assign_weight:
         class_weight = [np.array(Y_train).shape[0] / (np.array(Y_train) == i).sum() for i in range(len(set(Y_train)))]
         class_weight = torch.FloatTensor(class_weight)
@@ -94,7 +89,7 @@ def main():
     performance_dict['S_best_test_recall'] = test_recall
 
     performance_dict['script_file'] = os.path.basename(__file__)
-    performance_dict['note'] = 'piango'
+    performance_dict['note'] = NOTE
     performance_dict['Time'] = str(datetime.datetime.now())
     #performance_dict['device'] = torch.cuda.get_device_name(device)
     

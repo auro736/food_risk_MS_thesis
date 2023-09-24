@@ -8,7 +8,6 @@ import torch
 np.random.seed(42)
 
 
-
 def extract_from_dataframe(dataframe, columns):
     return_list = []
     for col in columns:

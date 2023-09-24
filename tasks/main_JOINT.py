@@ -15,7 +15,7 @@ from common_utils import extract_from_dataframe, multi_batch_generator, multi_ba
 from JOINT.custom_parser import my_parser
 from JOINT.utils import tokenize_with_new_mask, load_model, train, evaluate
 
-NOTE = 'beli cati'
+NOTE = 'Task: Multi'
 
 def main():
 
@@ -66,8 +66,6 @@ def main():
     X_train_raw, token_label_train_raw, Y_train = extract_from_dataframe(train_data, need_columns)
     X_dev_raw, token_label_dev_raw, Y_dev = extract_from_dataframe(val_data, need_columns)
     X_test_raw, token_label_test_raw, Y_test = extract_from_dataframe(test_data, need_columns)
-    args.eval_batch_size = Y_dev.shape[0]
-    args.test_batch_size = Y_test.shape[0]
 
     with open(os.path.join(args.data, args.label_map), 'r') as fp:
             label_map = json.load(fp)

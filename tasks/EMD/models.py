@@ -164,11 +164,7 @@ class ModelForTokenClassificationWithCRF(PreTrainedModel):
         super().__init__(config)
         self.num_labels = config.num_labels
         self.model_name = model_name
-
-        if "deberta" in model_name:
-            self.model = AutoModel.from_pretrained(model_name, config = config)
-        else:
-            self.model = AutoModel.from_pretrained(model_name, config = config, add_pooling_layer=False)
+        self.model = AutoModel.from_pretrained(model_name, config = config, add_pooling_layer=False)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.classifier = nn.Linear(config.hidden_size, config.num_labels)
         self.crf = CRF(num_tags=config.num_labels, batch_first=True)

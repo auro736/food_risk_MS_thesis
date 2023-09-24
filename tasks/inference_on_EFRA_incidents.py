@@ -1,33 +1,30 @@
 import os
 import json
 import random
-import shutil
 import datetime
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import torch
-from transformers import AutoTokenizer, AutoConfig, AdamW
+from transformers import AutoTokenizer
 
 from EMD.models import *
-from EMD.utils import train, evaluate, predict, load_model, load_local_EMD_model
+from EMD.utils import predict, load_local_EMD_model
 
 from EFRA.custom_parser import my_parser
 from EFRA.utils import tokenize_with_new_mask_inc, tokenize_with_new_mask_inc_train
 
-from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
+from common_utils import extract_from_dataframe, mask_batch_seq_generator
 
-
-
-SEED = 42
-
-random.seed(SEED)
-np.random.seed(SEED)
-torch.manual_seed(SEED)
+NOTE = 'Inferenza modelli tweets su Incidents'
 
 def main():
 
     args = my_parser()
+    
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+
     incidents_train = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/inc_train_EN_annotati.p')
     incidents_test = pd.read_pickle('/home/agensale/rora_tesi_new/data/SampleAgroknow/Incidents/inc_test_EN_annotati.p')
 
@@ -66,13 +63,12 @@ def main():
     # X_train_raw, Y_train_raw = X_train_raw[:10], Y_train_raw[:10]
     # X_test_raw, Y_test_raw = X_test_raw[:10], Y_test_raw[:10]
 
-    X_train, masks_train, Y_train = tokenize_with_new_mask_inc_train(X_train_raw, args.max_length, tokenizer, Y_train_raw, label_map)
+    _, _, Y_train = tokenize_with_new_mask_inc_train(X_train_raw, args.max_length, tokenizer, Y_train_raw, label_map)
     X_test, masks_test, Y_test = tokenize_with_new_mask_inc(X_test_raw, args.max_length, tokenizer, Y_test_raw, label_map)
 
     # weight of each class in loss function
     class_weight = None
-    args.assign_weight = 'True'
-    if args.assign_weight: # default True
+    if args.assign_weight: 
         class_weight = [Y_train.shape[0] / (Y_train == i).sum() for i in range(len(labels))]
         class_weight = torch.FloatTensor(class_weight)
 
@@ -106,9 +102,10 @@ def main():
     performance_dict['T_best_test_results_by_tag'] = test_results_by_tag
 
     performance_dict['script_file'] = os.path.basename(__file__)
-    performance_dict['note'] = 'elo'
+    performance_dict['note'] = NOTE
     performance_dict['Time'] = str(datetime.datetime.now())
     # performance_dict['device'] = torch.cuda.get_device_name(device)
+
     for key, value in performance_dict.items():
         if type(value) is np.int64:
             performance_dict[key] = int(value)

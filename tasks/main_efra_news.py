@@ -19,16 +19,15 @@ from TRC.utils import load_local_TRC_model, load_model
 from EFRA.utils import tokenize_with_new_mask_news
 from EFRA.custom_parser import my_parser
 
-SEED = 42
-
-random.seed(SEED)
-np.random.seed(SEED)
-torch.manual_seed(SEED)
-
+NOTE = 'Task: News'
 
 def main():
 
     args = my_parser()
+
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     if args.from_finetuned:
         log_directory = args.log_dir +'/news/' + str(args.bert_model).split('/')[-1] + '/from_finetuned' + '/'  \
@@ -66,8 +65,6 @@ def main():
     model_name = args.bert_model
 
     print(args.max_length)
-
-    #device = "cpu"
   
     need_columns = ['words', 'sentence_class']
 
@@ -79,13 +76,6 @@ def main():
     if args.from_finetuned:
         print('USING FINETUNED MODEL')
 
-        # model_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/pytorch_model.bin'
-        # config_path = '/home/cc/rora_tesi_new/log/log_TRC/roberta-large/bertweet-seq/24_epoch/Tweet-Fid/True_weight/42_seed/saved-model/config.json'
-        
-        # SE USI HPC
-        # model_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/roberta-large/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-        # config_path = '/home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/roberta-large/bertweet-seq/24_epoch/data/True_weight/42_seed/saved-model/config.json'
-
         model_path = args.saved_model_path + 'pytorch_model.bin'
         config_path = args.saved_model_path + 'config.json'
         
@@ -95,9 +85,7 @@ def main():
     else: 
         print('NO FINETUNED')
         config = AutoConfig.from_pretrained(args.bert_model)
-        # model = load_model(args.model_type, args.bert_model, config)
         model = load_model(args.bert_model, config)
-
 
 
     model = model.to(device)
@@ -284,7 +272,7 @@ def main():
     performance_dict['script_file'] = os.path.basename(__file__)
     performance_dict['log_directory'] = log_directory
     performance_dict['log_filename'] = log_filename
-    performance_dict['note'] = 'ciaone'
+    performance_dict['note'] = NOTE
     performance_dict['Time'] = str(datetime.datetime.now())
     performance_dict['device'] = torch.cuda.get_device_name(device)
     

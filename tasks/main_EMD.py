@@ -15,7 +15,7 @@ from EMD.utils import tokenize_with_new_mask, load_model, train, evaluate, predi
 
 from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
 
-NOTE = 'hello'
+NOTE = 'Task: EMD'
 
 def main():
 
@@ -53,21 +53,11 @@ def main():
     val_data = pd.read_pickle(os.path.join(args.data, args.val_file))
     test_data = pd.read_pickle(os.path.join(args.data, args.test_file))
 
-    need_columns = ['tweet_tokens']
-    need_columns.append('entity_label')
-    # if args.task_type == 'entity_detection':
-    #     need_columns.append('entity_label')
-    # elif args.task_type == 'relevant_entity_detection':
-    #     need_columns.append('relevant_entity_label')
-    # elif args.task_type == 'entity_relevance_classification':
-    #     need_columns.append('relevance_entity_class_label')
-    need_columns.append('sentence_class')
+    need_columns = ['tweet_tokens', 'entity_label', 'sentence_class']
 
     X_train_raw, Y_train_raw, seq_train = extract_from_dataframe(train_data, need_columns)
     X_dev_raw, Y_dev_raw, seq_dev = extract_from_dataframe(val_data, need_columns)
     X_test_raw, Y_test_raw, seq_test = extract_from_dataframe(test_data, need_columns)
-    args.eval_batch_size = seq_dev.shape[0]
-    args.test_batch_size = seq_test.shape[0]
 
     with open(os.path.join(args.data, args.label_map), 'r') as fp:
         label_map = json.load(fp)
@@ -274,6 +264,7 @@ def main():
     performance_dict['note'] = NOTE
     performance_dict['Time'] = str(datetime.datetime.now())
     performance_dict['device'] = torch.cuda.get_device_name(device)
+
     for key, value in performance_dict.items():
         if type(value) is np.int64:
             performance_dict[key] = int(value)

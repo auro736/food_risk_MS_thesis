@@ -18,7 +18,7 @@ from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix
 from common_utils import pad_sequences, extract_from_dataframe
 from TRC.models import ModelForWeightedSequenceClassification, ModelForWeightedSequenceClassificationDeberta
 
-# args = my_parser()
+
 def load_local_TRC_model(model_path, config_path, device, model_name):
 
     config = AutoConfig.from_pretrained(config_path)
@@ -299,6 +299,7 @@ def evaluate(model, test_batch_generator, num_batches, device, class_weight):
 
     return logits.detach().cpu(), y_batch.detach().cpu().numpy(), epoch_loss / num_batches, epoch_auc / num_batches, epoch_acc / num_batches, epoch_tn, epoch_fp, epoch_fn, epoch_tp, epoch_precision, epoch_recall, output_s_pred
 
+
 def load_model(model_path, config):
     """
         
@@ -312,22 +313,6 @@ def load_model(model_path, config):
 
 
     return model
-
-# def load_model(model_type, model_path, config):
-#     """
-#         model_type = from args, bertweet-seq or BiLSTM
-#         model_path = from args bert-model, the name of huggingface of the model used
-#     """
-#     if model_type == 'bertweet-seq':
-        
-#         if "deberta" in model_path:
-#             model = ModelForWeightedSequenceClassificationDeberta(model_name = model_path, config = config)
-#         else:
-#             model = ModelForWeightedSequenceClassification(model_name = model_path, config = config)
-
-#     else:
-#         model = None
-#     return model
 
 
 

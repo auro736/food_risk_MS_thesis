@@ -16,11 +16,16 @@ from TRC.utils import tokenize_with_new_mask, load_model, train, evaluate, calib
 
 from common_utils import extract_from_dataframe, mask_batch_generator, mask_batch_seq_generator
 
-NOTE = 'V1.0.0: Initial Public Version'
+NOTE = 'Task: TRC'
 
 def main():
 
     args = my_parser()
+
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+
 
     print("cuda is available:", torch.cuda.is_available())
 
@@ -43,10 +48,6 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    random.seed(args.seed)
-    np.random.seed(args.seed)
-    torch.manual_seed(args.seed)
-
     train_data = pd.read_pickle(os.path.join(args.data, args.train_file))
     val_data = pd.read_pickle(os.path.join(args.data, args.val_file))
     test_data = pd.read_pickle(os.path.join(args.data, args.test_file))
@@ -55,9 +56,7 @@ def main():
     X_train_raw, Y_train = extract_from_dataframe(train_data, need_columns)
     X_dev_raw, Y_dev = extract_from_dataframe(val_data, need_columns)
     X_test_raw, Y_test = extract_from_dataframe(test_data, need_columns)
-    args.eval_batch_size = Y_dev.shape[0]
-    args.test_batch_size = Y_test.shape[0]
-
+    
     print(args)
 
     tokenizer = AutoTokenizer.from_pretrained(args.bert_model, normalization=True)
@@ -221,12 +220,6 @@ def main():
                                                                                               class_weight)
     
     
-    figure_name = 'calibration_curve.' + str(datetime.datetime.now()).replace(' ', '--').replace(':', '-').replace('.',
-                                                                                                         '-')+ '.png'
-    path = log_directory+figure_name
-
-    # calibration_plot(logits=logits, y = y_batch, img_path=path)
-
     content = f'Test Acc: {test_acc * 100:.2f}%, AUC: {test_auc * 100:.2f}%, TN: {test_tn}, FP: {test_fp}, FN: {test_fn}, TP: {test_tp}, Precision: {test_precision* 100:.2f}%, Recall: {test_recall* 100:.2f}%'
     print(content)
 
