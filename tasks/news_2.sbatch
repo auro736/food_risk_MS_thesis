@@ -33,3 +33,4 @@ python tasks/main_efra_news.py \
     --assign_weight \
     --from_finetuned \
     --saved_model_path /home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/deberta-v3-large/bertweet-seq/16_epoch/data/True_weight/42_seed/saved-model/ \
+    --save_model \

@@ -1,6 +1,6 @@
 #!/bin/sh
-#SBATCH --job-name=news_3
-#SBATCH --output=/home/agensale/output_efra/news_3.out
+#SBATCH --job-name=news_6
+#SBATCH --output=/home/agensale/output_efra/news_6.out
 #SBATCH --nodes=1            
 #SBATCH --ntasks=1     
 #SBATCH --partition=cuda        
@@ -27,8 +27,10 @@ which pip && which python
 
 
 python tasks/main_efra_news.py \
-    --bert_model roberta-large \
+    --bert_model xlm-roberta-large \
     --n_epochs 10 \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
     --assign_weight \
+    --from_finetuned \
+    --saved_model_path /home/agensale/rora_tesi/log_rora_tesi/log-tweet-classification/xlm-roberta-large/bertweet-seq/14_epoch/data/True_weight/42_seed/saved-model/ \
     --save_model \
