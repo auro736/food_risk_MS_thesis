@@ -114,7 +114,7 @@ def main():
         {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)],
          'weight_decay_rate': 0.0}
     ]
-    optimizer = AdamW(optimizer_grouped_parameters, lr=1e-6)
+    optimizer = AdamW(optimizer_grouped_parameters, lr=args.learning_rate)
 
     best_valid_acc = 0
     best_valid_auc = 0
