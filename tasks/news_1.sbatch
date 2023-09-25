@@ -32,5 +32,5 @@ python tasks/main_efra_news.py \
     --data /home/agensale/rora_tesi_new/data/SampleAgroknow \
     --assign_weight \
     --save_model \
-    --learning_rate 1e-6 \
+    --learning_rate 1e-7 \
    
