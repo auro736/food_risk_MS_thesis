@@ -10,6 +10,8 @@ from TRC.utils import tokenize_with_new_mask, evaluate, load_local_TRC_model, cr
 # from TRC.utils_ea import *
 from common_utils import mask_batch_seq_generator, extract_from_dataframe
 
+from EFRA.utils import tokenize_with_new_mask_news
+
 # TRC 
 
 MAX_LENGTH = 128
@@ -23,45 +25,57 @@ def main():
     np.random.seed(SEED)
     torch.manual_seed(SEED)
 
-    model_name = 'cardiffnlp/twitter-roberta-large-2022-154m'
-    log_directory = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/20_epoch/data/True_weight/42_seed/'
+    model_name = 'roberta-large'
+    log_directory = '/home/agensale/rora_tesi_new/log/log_EFRA/news/roberta-large/from_finetuned/10_epoch/SampleAgroknow/True_weight/42_seed/'
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model_path = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/20_epoch/data/True_weight/42_seed/saved-model/pytorch_model.bin'
-    config_path = '/home/cc/rora_tesi_new/log/log_TRC/twitter-roberta-large-2022-154m/bertweet-seq/20_epoch/data/True_weight/42_seed/saved-model/config.json'
+    model_path = '/home/agensale/rora_tesi_new/log/log_EFRA/news/roberta-large/from_finetuned/10_epoch/SampleAgroknow/True_weight/42_seed/saved-model/pytorch_model.bin'
+    config_path = '/home/agensale/rora_tesi_new/log/log_EFRA/news/roberta-large/from_finetuned/10_epoch/SampleAgroknow/True_weight/42_seed/saved-model/config.json'
 
     model = load_local_TRC_model(model_path, config_path, device, model_name)
     
     model = model.to(device)
 
-    train_data_path = '/home/cc/rora_tesi_new/data/Tweet-Fid/train.p'
-    test_data_path = '/home/cc/rora_tesi_new/data/Tweet-Fid/test.p'
+    train_data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/news_train_EN.p'
+    test_data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/news_test_EN.p'
     
-    need_columns = ['tweet','tweet_tokens', 'sentence_class']
+    # need_columns = ['tweet','tweet_tokens', 'sentence_class']
+
+    need_columns = ['description','words', 'sentence_class']
 
     train_ds = pd.read_pickle(train_data_path)
     test_ds = pd.read_pickle(test_data_path)
 
-    _, _, Y_train = extract_from_dataframe(train_ds, need_columns)
-    tweet_test, X_test_raw, Y_test = extract_from_dataframe(test_ds, need_columns)
+    descr_train ,_, Y_train = extract_from_dataframe(train_ds, need_columns)
+    descr_test, X_test_raw, Y_test = extract_from_dataframe(test_ds, need_columns)
+
+    # descr_train, Y_train = descr_train[:100], Y_train[:100]
+    # descr_test, X_test_raw, Y_test = descr_test[:100], X_test_raw[:100], Y_test[:100]
+
+    # _, _, Y_train = extract_from_dataframe(train_ds, need_columns)
+    # tweet_test, X_test_raw, Y_test = extract_from_dataframe(test_ds, need_columns)
 
     # _, _, Y_train = prepare_data(train_data_path, need_columns)
     # tweet_test, X_test_raw, Y_test = prepare_data(test_data_path, need_columns)
 
-    test_batch_size = Y_test.shape[0]
+    # test_batch_size = Y_test.shape[0]
+    test_batch_size = 32
+
 
     class_weight = None
     if ASSIGN_WEIGHT:
         class_weight = create_weight(Y_train)
     
     tokenizer = AutoTokenizer.from_pretrained(model_name, normalization=True)
-    X_test, masks_test = tokenize_with_new_mask(X_test_raw, MAX_LENGTH, tokenizer)
+    # X_test, masks_test = tokenize_with_new_mask(X_test_raw, MAX_LENGTH, tokenizer)
+    X_test, masks_test = tokenize_with_new_mask_news(X_test_raw, MAX_LENGTH, tokenizer)
+
 
     num_batches = X_test.shape[0] // test_batch_size
     test_batch_generator = mask_batch_seq_generator(X_test, Y_test, masks_test, test_batch_size)
 
-    logits, y_true, test_loss, test_auc, test_acc, test_tn, test_fp, test_fn, test_tp, test_precision, test_recall, test_s_pred = evaluate(model,
+    _, y_true, test_loss, test_auc, test_acc, test_tn, test_fp, test_fn, test_tp, test_precision, test_recall, test_s_pred = evaluate(model,
                                                                                                 test_batch_generator,
                                                                                                 num_batches, device,
                                                                                                 class_weight )
@@ -70,7 +84,8 @@ def main():
     print(content)
 
     softmax = nn.Softmax(dim=1)
-    probabilities = softmax(logits)
+    tensor_preds = torch.from_numpy(test_s_pred)
+    probabilities = softmax(tensor_preds)
 
     cal_path = log_directory + 'calibration_curve.png'
     calibration_plot(probabilities, y_true = y_true, img_path=cal_path, model_name=model_name)
@@ -79,11 +94,13 @@ def main():
     confusion_matrix_display(probabilities, y_true=y_true, model_name =model_name, path = conf_path)
 
 
-    df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=tweet_test, tweet_token = X_test_raw, y_true=y_true)
-    df_errati.to_csv(log_directory+'tweet_errati.csv', header= True, index = True)
+    df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=descr_test, tweet_token = X_test_raw, y_true=y_true)
+    # df_errati.to_csv(log_directory+'tweet_errati.csv', header= True, index = True)
+    df_errati.to_csv(log_directory+'news_errate.csv', header= True, index = True)
     df_errati.head()
 
-    df_corretti.to_csv(log_directory+'tweet_corretti.csv', header= True, index = True)
+    # df_corretti.to_csv(log_directory+'tweet_corretti.csv', header= True, index = True)
+    df_corretti.to_csv(log_directory+'news_corrette.csv', header= True, index = True)
     df_corretti.head()
 
     # tokens_1 = df_corretti['Tweet tok'][0]

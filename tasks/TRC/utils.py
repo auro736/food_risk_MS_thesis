@@ -289,15 +289,17 @@ def evaluate(model, test_batch_generator, num_batches, device, class_weight):
 
             if output_s_pred is None:
                 output_s_pred = logits.detach().cpu().numpy()
+                y_true = y_batch.detach().cpu()
             else:
                 output_s_pred = np.concatenate([output_s_pred, logits.detach().cpu().numpy()], axis=0)
+                y_true = np.concatenate([y_true, y_batch.detach().cpu()], axis = 0)
 
         if (epoch_tp + epoch_fp) != 0:
             epoch_precision = epoch_tp / (epoch_tp + epoch_fp)
         if (epoch_tp + epoch_fn) != 0:
             epoch_recall = epoch_tp / (epoch_tp + epoch_fn)
 
-    return logits.detach().cpu(), y_batch.detach().cpu().numpy(), epoch_loss / num_batches, epoch_auc / num_batches, epoch_acc / num_batches, epoch_tn, epoch_fp, epoch_fn, epoch_tp, epoch_precision, epoch_recall, output_s_pred
+    return logits.detach().cpu(), y_true, epoch_loss / num_batches, epoch_auc / num_batches, epoch_acc / num_batches, epoch_tn, epoch_fp, epoch_fn, epoch_tp, epoch_precision, epoch_recall, output_s_pred
 
 
 def load_model(model_path, config):
