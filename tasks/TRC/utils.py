@@ -103,7 +103,7 @@ def get_top_n(n,token_dict):
         tmp[k] = v
     return tmp
 
-def create_analysis_csv(probabilities, tweet_test,tweet_token, y_true):
+def create_analysis_csv(probabilities, tweet_test,tweet_token, y_true, data_type):
 
     y_values, indices = torch.max(probabilities, 1)
     # dato che la posizione nella lista di 2 elementi della probabilità 
@@ -120,7 +120,11 @@ def create_analysis_csv(probabilities, tweet_test,tweet_token, y_true):
     corr = [[i, tweet_test[i], tweet_token[i], y_true[i], y_pred[i]] for i in range(len(y_true)) if y_true[i] == y_pred[i]]
     corr = np.array(corr)
 
-    cols = ['Tweet', 'Tweet tok', 'True label', 'Pred label']
+    if data_type == 'tweets':
+        cols = ['Tweet', 'Tweet tok', 'True label', 'Pred label']
+    elif data_type == 'news':
+        cols = ['News', 'News tok', 'True label', 'Pred label']
+
 
     errors_df = pd.DataFrame(errors[:,1:], columns=cols)
     corr_df = pd.DataFrame(corr[:,1:], columns=cols)

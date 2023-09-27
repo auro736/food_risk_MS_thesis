@@ -93,8 +93,9 @@ def main():
     conf_path = log_directory + 'confusion_matrix.png'
     confusion_matrix_display(probabilities, y_true=y_true, model_name =model_name, path = conf_path)
 
+    # df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=descr_test, tweet_token = X_test_raw, y_true=y_true, data_type = 'tweets')
 
-    df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=descr_test, tweet_token = X_test_raw, y_true=y_true)
+    df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=descr_test, tweet_token = X_test_raw, y_true=y_true, data_type = 'news')
     # df_errati.to_csv(log_directory+'tweet_errati.csv', header= True, index = True)
     df_errati.to_csv(log_directory+'news_errate.csv', header= True, index = True)
     df_errati.head()
