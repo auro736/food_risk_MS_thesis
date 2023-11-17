@@ -25,24 +25,32 @@ def main():
     np.random.seed(SEED)
     torch.manual_seed(SEED)
 
-    model_name = 'roberta-large'
-    log_directory = '/home/agensale/rora_tesi_new/log/log_EFRA/news/roberta-large/from_finetuned/10_epoch/SampleAgroknow/True_weight/42_seed/'
+    model_name = 'microsoft/deberta-v3-large'
+    #log_directory = '/home/agensale/rora_tesi_new/log/log_EFRA/news/roberta-large/from_finetuned/10_epoch/SampleAgroknow/True_weight/42_seed/'
+    log_directory = '/mnt/c/Users/auror/Desktop/rora_tesi_new/log/log_TRC/deberta-v3-large/'
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(device)
 
-    model_path = '/home/agensale/rora_tesi_new/log/log_EFRA/news/roberta-large/from_finetuned/10_epoch/SampleAgroknow/True_weight/42_seed/saved-model/pytorch_model.bin'
-    config_path = '/home/agensale/rora_tesi_new/log/log_EFRA/news/roberta-large/from_finetuned/10_epoch/SampleAgroknow/True_weight/42_seed/saved-model/config.json'
+    #model_path = '/home/agensale/rora_tesi_new/log/log_EFRA/news/roberta-large/from_finetuned/10_epoch/SampleAgroknow/True_weight/42_seed/saved-model/pytorch_model.bin'
+    #config_path = '/home/agensale/rora_tesi_new/log/log_EFRA/news/roberta-large/from_finetuned/10_epoch/SampleAgroknow/True_weight/42_seed/saved-model/config.json'
+
+    model_path = '/mnt/c/Users/auror/Desktop/deberta-v3-large-tweet-fid-TRC/pytorch_model.bin'
+    config_path = '/mnt/c/Users/auror/Desktop/deberta-v3-large-tweet-fid-TRC/config.json'
 
     model = load_local_TRC_model(model_path, config_path, device, model_name)
     
     model = model.to(device)
 
-    train_data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/news_train_EN.p'
-    test_data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/news_test_EN.p'
+    #train_data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/news_train_EN.p'
+    #test_data_path = '/home/agensale/rora_tesi_new/data/SampleAgroknow/News/news_test_EN.p'
     
-    # need_columns = ['tweet','tweet_tokens', 'sentence_class']
+    train_data_path = '/mnt/c/Users/auror/Desktop/rora_tesi_new/data/Tweet-Fid/train.p'
+    test_data_path = '/mnt/c/Users/auror/Desktop/rora_tesi_new/data/Tweet-Fid/test.p'
 
-    need_columns = ['description','words', 'sentence_class']
+    need_columns = ['tweet','tweet_tokens', 'sentence_class']
+
+    #need_columns = ['description','words', 'sentence_class']
 
     train_ds = pd.read_pickle(train_data_path)
     test_ds = pd.read_pickle(test_data_path)
@@ -68,8 +76,8 @@ def main():
         class_weight = create_weight(Y_train)
     
     tokenizer = AutoTokenizer.from_pretrained(model_name, normalization=True)
-    # X_test, masks_test = tokenize_with_new_mask(X_test_raw, MAX_LENGTH, tokenizer)
-    X_test, masks_test = tokenize_with_new_mask_news(X_test_raw, MAX_LENGTH, tokenizer)
+    X_test, masks_test = tokenize_with_new_mask(X_test_raw, MAX_LENGTH, tokenizer)
+    #X_test, masks_test = tokenize_with_new_mask_news(X_test_raw, MAX_LENGTH, tokenizer)
 
 
     num_batches = X_test.shape[0] // test_batch_size
@@ -93,15 +101,15 @@ def main():
     conf_path = log_directory + 'confusion_matrix.png'
     confusion_matrix_display(probabilities, y_true=y_true, model_name =model_name, path = conf_path)
 
-    # df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=descr_test, tweet_token = X_test_raw, y_true=y_true, data_type = 'tweets')
+    df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=descr_test, tweet_token = X_test_raw, y_true=y_true, data_type = 'tweets')
 
-    df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=descr_test, tweet_token = X_test_raw, y_true=y_true, data_type = 'news')
-    # df_errati.to_csv(log_directory+'tweet_errati.csv', header= True, index = True)
-    df_errati.to_csv(log_directory+'news_errate.csv', header= True, index = True)
+    #df_errati, df_corretti = create_analysis_csv(probabilities=probabilities, tweet_test=descr_test, tweet_token = X_test_raw, y_true=y_true, data_type = 'news')
+    df_errati.to_csv(log_directory+'tweet_errati.csv', header= True, index = True)
+    #df_errati.to_csv(log_directory+'news_errate.csv', header= True, index = True)
     df_errati.head()
 
-    # df_corretti.to_csv(log_directory+'tweet_corretti.csv', header= True, index = True)
-    df_corretti.to_csv(log_directory+'news_corrette.csv', header= True, index = True)
+    df_corretti.to_csv(log_directory+'tweet_corretti.csv', header= True, index = True)
+    #df_corretti.to_csv(log_directory+'news_corrette.csv', header= True, index = True)
     df_corretti.head()
 
     # tokens_1 = df_corretti['Tweet tok'][0]
